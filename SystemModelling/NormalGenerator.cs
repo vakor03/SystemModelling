@@ -1,4 +1,4 @@
-﻿using SystemModelling;
+﻿namespace SystemModelling;
 
 public class NormalGenerator : IGenerator
 {

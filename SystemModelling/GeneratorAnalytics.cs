@@ -1,4 +1,6 @@
-﻿public class GeneratorAnalytics
+﻿namespace SystemModelling;
+
+public class GeneratorAnalytics
 {
     public double CalculateMean(IEnumerable<double> values)
     {

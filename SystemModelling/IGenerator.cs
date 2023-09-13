@@ -1,4 +1,6 @@
-﻿public interface IGenerator
+﻿namespace SystemModelling;
+
+public interface IGenerator
 {
     double Next();
 
