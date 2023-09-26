@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 
-namespace SystemModelling;
+namespace SystemModelling.Generators;
 
 public static class IntervalExtensions
 {
@@ -12,7 +12,7 @@ public static class IntervalExtensions
         }
     }
 
-    public static List<Interval> UniteSmallIntervals(this List<Interval> intervals, int minElementsCountInInterval = 5)
+    public static void UniteSmallIntervals(this List<Interval> intervals, int minElementsCountInInterval = 5)
     {
         for (int i = 0; i < intervals.Count; i++)
         {
@@ -38,9 +38,7 @@ public static class IntervalExtensions
                 i -= 1;
             }
         }
-
-        return intervals;
-
+        
         void UniteWithRight(int i)
         {
             var unitedInterval = intervals[i].Unite(intervals[i + 1]);

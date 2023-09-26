@@ -1,4 +1,4 @@
-﻿namespace SystemModelling
+﻿namespace SystemModelling.Generators
 {
     public class GeneratorAnalytics
     {

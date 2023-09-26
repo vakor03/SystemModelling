@@ -1,11 +1,10 @@
-﻿namespace SystemModelling;
+﻿namespace SystemModelling.Generators;
 
 public class ExponentialGenerator : Generator
 {
     public double Lambda { get; set; }
 
-    public ExponentialGenerator(double lambda)
-    {
+    public ExponentialGenerator(double lambda) {
         Lambda = lambda;
     }
 
