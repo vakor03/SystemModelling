@@ -1,4 +1,7 @@
-﻿namespace SystemModelling.SMO;
+﻿using SystemModelling.SMO.Elements;
+using SystemModelling.SMO.Enums;
+
+namespace SystemModelling.SMO.Builders;
 
 public class ElementBuilder
 {

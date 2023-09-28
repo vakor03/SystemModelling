@@ -1,4 +1,7 @@
-﻿namespace SystemModelling.SMO;
+﻿using SystemModelling.SMO.Elements;
+using SystemModelling.SMO.Loggers;
+
+namespace SystemModelling.SMO;
 
 public class Model
 {

@@ -1,4 +1,4 @@
-﻿namespace SystemModelling.SMO;
+﻿namespace SystemModelling.SMO.Enums;
 
 public enum DistributionType
 {

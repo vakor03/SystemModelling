@@ -1,4 +1,8 @@
-﻿namespace SystemModelling.SMO;
+﻿using SystemModelling.SMO.Enums;
+using SystemModelling.SMO.Loggers;
+using SystemModelling.SMO.TransitionOptions;
+
+namespace SystemModelling.SMO.Elements;
 
 public class Element
 {
@@ -16,8 +20,8 @@ public class Element
 
     public State CurrentState { get; set; }
 
-    public Element? NextElement { get; set; }
-
+    // public Element? NextElement { get; set; }
+    public ITransitionOption? TransitionOption { get; set; }
 
     public int Id { get; set; }
     public static int NextId { get; set; } = 0;
@@ -32,7 +36,7 @@ public class Element
         Distribution = DistributionType.Exp;
         TCurrent = TNext;
         CurrentState = State.Free;
-        NextElement = null;
+        TransitionOption = null;
         Id = NextId;
         NextId++;
         Name = "element" + Id;
@@ -46,7 +50,7 @@ public class Element
         Distribution = DistributionType.Constant;
         TCurrent = TNext;
         CurrentState = State.Free;
-        NextElement = null;
+        TransitionOption = null;
         Id = NextId;
         NextId++;
         Name = "element" + Id;
@@ -60,7 +64,7 @@ public class Element
         Distribution = DistributionType.Exp;
         TCurrent = TNext;
         CurrentState = State.Free;
-        NextElement = null;
+        TransitionOption = null;
         Id = NextId;
         NextId++;
         Name = "element" + Id;
@@ -100,7 +104,7 @@ public class Element
     public virtual void DoStatistics(double delta)
     {
     }
-    
+
     public enum State
     {
         Free = 0,

@@ -1,4 +1,4 @@
-﻿namespace SystemModelling.SMO;
+﻿namespace SystemModelling.SMO.Elements;
 
 public class Create : Element
 {
@@ -11,6 +11,6 @@ public class Create : Element
     {
         base.OutAct();
         TNext = TCurrent + GetDelay();
-        NextElement?.InAct();
+        TransitionOption?.Next?.InAct();
     }
 }

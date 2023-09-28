@@ -1,4 +1,6 @@
-﻿namespace SystemModelling.SMO;
+﻿using SystemModelling.SMO.Elements;
+
+namespace SystemModelling.SMO.Builders;
 
 public class ProcessBuilder : ElementBuilder
 {

@@ -1,10 +1,11 @@
 ﻿#region
 
 using System.Text;
+using SystemModelling.SMO.Loggers;
 
 #endregion
 
-namespace SystemModelling.SMO;
+namespace SystemModelling.SMO.Elements;
 
 public class Process : Element
 {
@@ -61,7 +62,8 @@ public class Process : Element
     public override void OutAct()
     {
         base.OutAct();
-        NextElement?.InAct();
+
+        ActNextElementIfNeeded();
         TNext = double.MaxValue;
         CurrentState = State.Free;
 
@@ -70,6 +72,20 @@ public class Process : Element
             _queue--;
             CurrentState = State.Busy;
             TNext = TCurrent + GetDelay();
+        }
+    }
+
+    private void ActNextElementIfNeeded()
+    {
+        Element? nextElement = TransitionOption?.Next;
+        if (nextElement != null)
+        {
+            Console.WriteLine($"Process {Name} -> {nextElement.Name}");
+            nextElement.InAct();
+        }
+        else
+        {
+            Console.WriteLine($"Process {Name} -> null");
         }
     }
 
@@ -83,13 +99,13 @@ public class Process : Element
     {
         base.PrintResult(logger);
         _sb.Clear();
-
+        
         _sb.AppendLine($"mean length of queue = {_meanQueue / TCurrent}");
         _sb.AppendLine($"mean load = {_meanLoad / TCurrent}");
         _sb.AppendLine($"failure probability = {(double)_failure / Quantity}");
         logger.Log(
             _sb.ToString());
-
+        
         _sb.Clear();
     }
 
@@ -99,5 +115,5 @@ public class Process : Element
         _meanLoad += (CurrentState == State.Busy ? 1 : 0) * delta;
     }
 
-    public static ProcessBuilder Create() => ProcessBuilder.New();
+    // public static ProcessBuilder Create() => ProcessBuilder.New();
 }
