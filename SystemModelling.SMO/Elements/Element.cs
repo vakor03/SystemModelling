@@ -1,4 +1,5 @@
-﻿using SystemModelling.SMO.Enums;
+﻿using SystemModelling.SMO.Builders;
+using SystemModelling.SMO.Enums;
 using SystemModelling.SMO.Loggers;
 using SystemModelling.SMO.TransitionOptions;
 
@@ -99,4 +100,6 @@ public class Element
         Free = 0,
         Busy = 1
     }
+    
+    public static FluentElementBuilder New() => new();
 }

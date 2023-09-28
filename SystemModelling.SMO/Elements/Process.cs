@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Text;
+using SystemModelling.SMO.Builders;
 using SystemModelling.SMO.Loggers;
 
 #endregion
@@ -115,5 +116,5 @@ public class Process : Element
         _meanLoad += (CurrentState == State.Busy ? 1 : 0) * delta;
     }
 
-    // public static ProcessBuilder Create() => ProcessBuilder.New();
+    public new static FluentProcessBuilder New() => new();
 }

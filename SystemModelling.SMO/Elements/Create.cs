@@ -1,4 +1,6 @@
-﻿namespace SystemModelling.SMO.Elements;
+﻿using SystemModelling.SMO.Builders;
+
+namespace SystemModelling.SMO.Elements;
 
 public class Create : Element
 {
@@ -13,4 +15,6 @@ public class Create : Element
         TNext = TCurrent + GetDelay();
         TransitionOption?.Next?.InAct();
     }
+
+    public new static FluentCreateBuilder New() => new();
 }
