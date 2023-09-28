@@ -7,26 +7,15 @@ namespace SystemModelling.SMO.Elements;
 public class Element
 {
     public string Name { get; set; }
-
-
     public double DelayMean { get; set; }
-
     public double DelayDeviation { get; set; }
-
     public DistributionType Distribution { get; set; }
-
     public int Quantity { get; set; }
-
-
     public State CurrentState { get; set; }
-
-    // public Element? NextElement { get; set; }
     public ITransitionOption? TransitionOption { get; set; }
-
-    public int Id { get; set; }
+    public int Id { get; private set; }
     public static int NextId { get; set; } = 0;
     public double TCurrent { get; set; }
-
     public double TNext { get; set; }
 
     public Element()

@@ -1,29 +1,44 @@
 ﻿using SystemModelling.SMO;
+using SystemModelling.SMO.Builders;
 using SystemModelling.SMO.Elements;
 using SystemModelling.SMO.Enums;
 using SystemModelling.SMO.TransitionOptions;
 
-// RunDefaultTask();
+RunDefaultTask();
 
 // RunTask3();
-RunTask5();
+
+// RunTask5();
 Console.ReadKey();
 
 static void RunDefaultTask()
 {
-    Create createElement = new Create(2.0);
-    Process processElement = new Process(1.0);
-
+    // Create createElement = new Create(2.0);
+    Create createElement = FluentCreateBuilder.New()
+        .WithDelayMean(2.0)
+        .WithName("CREATOR")
+        .WithDistribution(DistributionType.Exp)
+        .Build();
+    
+    // Process processElement = new Process(1.0);
+    Process processElement = FluentProcessBuilder.New()
+        .WithDelayMean(1.0)
+        .WithName("PROCESSOR")
+        .WithMaxQueue(5)
+        .WithDistribution(DistributionType.Exp)
+        .Build();
+    
     Console.WriteLine($"id0 = {createElement.Id} id1={processElement.Id}");
 
     createElement.TransitionOption = processElement.ToSingleTransitionOption();
-    processElement.MaxQueue = 5;
-
-    createElement.Name = "CREATOR";
-    processElement.Name = "PROCESSOR";
-
-    createElement.Distribution = DistributionType.Exp;
-    processElement.Distribution = DistributionType.Exp;
+    
+    // processElement.MaxQueue = 5;
+    //
+    // createElement.Name = "CREATOR";
+    // processElement.Name = "PROCESSOR";
+    //
+    // createElement.Distribution = DistributionType.Exp;
+    // processElement.Distribution = DistributionType.Exp;
 
     List<Element> list = new()
     {
