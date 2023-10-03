@@ -1,15 +1,14 @@
-﻿using SystemModelling;
+﻿namespace SystemModelling.Generators;
 
-public class ExponentialGenerator : IGenerator
+public class ExponentialGenerator : Generator
 {
     public double Lambda { get; set; }
 
-    public ExponentialGenerator(double lambda)
-    {
+    public ExponentialGenerator(double lambda) {
         Lambda = lambda;
     }
 
-    public double Next()
+    public override double Next()
     {
         double evenlyDistributedValue = Random.Shared.NextDouble();
 
