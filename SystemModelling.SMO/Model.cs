@@ -28,7 +28,7 @@ public class Model
     {
         while (_tCurrent < time)
         {
-            _tNext = FindSmallerTNext(out _currentElement);
+            _tNext = FindSmallestTNext(out _currentElement);
 
             LogCurrentEvent();
 
@@ -38,9 +38,7 @@ public class Model
 
             UpdateTCurrentInAllElements();
 
-            _currentElement.OutAct();
-
-            ActElementsWithSameTNext();
+            ActElementsWithCurrentTNext();
 
             PrintElementsInfo();
         }
@@ -48,7 +46,7 @@ public class Model
         PrintResults();
     }
 
-    private void ActElementsWithSameTNext()
+    private void ActElementsWithCurrentTNext()
     {
         foreach (var element in _elements)
         {
@@ -77,10 +75,10 @@ public class Model
 
     private void LogCurrentEvent()
     {
-        _logger.Log($"\nIt's time for event in {_currentElement.Name}, time = {_tNext}");
+        _logger.WriteLine($"\nIt's time for event in {_currentElement.Name}, time = {_tNext}");
     }
 
-    private double FindSmallerTNext(out Element correspondingElement)
+    private double FindSmallestTNext(out Element correspondingElement)
     {
         double result = Double.MaxValue;
         correspondingElement = null;
@@ -107,7 +105,7 @@ public class Model
 
     public void PrintResults()
     {
-        _logger.Log("\n-------------RESULTS-------------");
+        _logger.WriteLine("\n-------------RESULTS-------------");
         foreach (Element element in _elements)
         {
             element.PrintResult(_logger);

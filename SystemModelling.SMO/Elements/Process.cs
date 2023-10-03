@@ -8,7 +8,7 @@ using SystemModelling.SMO.Loggers;
 
 namespace SystemModelling.SMO.Elements;
 
-public class Process : Element
+public class Process : Element, ICloneable<Process>
 {
     private int _failure;
     private int _maxQueue;
@@ -78,7 +78,7 @@ public class Process : Element
 
     private void ActNextElementIfNeeded()
     {
-        Element? nextElement = TransitionOption?.Next;
+        Element? nextElement = Transition?.Next;
         if (nextElement != null)
         {
             Console.WriteLine($"Process {Name} -> {nextElement.Name}");
@@ -93,20 +93,21 @@ public class Process : Element
     public override void PrintInfo(ILogger logger)
     {
         base.PrintInfo(logger);
-        logger.Log($"failure = {_failure}");
+        // logger.Write($"failure = {_failure}");
+        // logger.Write($"Queue: {_queue}");
     }
 
     public override void PrintResult(ILogger logger)
     {
         base.PrintResult(logger);
         _sb.Clear();
-        
+
         _sb.AppendLine($"mean length of queue = {_meanQueue / TCurrent}");
         _sb.AppendLine($"mean load = {_meanLoad / TCurrent}");
         _sb.AppendLine($"failure probability = {(double)_failure / Quantity}");
-        logger.Log(
+        logger.WriteLine(
             _sb.ToString());
-        
+
         _sb.Clear();
     }
 
@@ -117,4 +118,15 @@ public class Process : Element
     }
 
     public new static FluentProcessBuilder New() => new();
+
+    public Process Clone()
+    {
+        return New()
+            .WithMaxQueue(MaxQueue)
+            .WithDistribution(Distribution)
+            .WithName(Name + "Clone")
+            .WithDelayMean(DelayMean)
+            .WithDelayDeviation(DelayDeviation)
+            .Build();
+    }
 }

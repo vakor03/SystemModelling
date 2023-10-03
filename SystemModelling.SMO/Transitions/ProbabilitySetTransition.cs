@@ -1,12 +1,12 @@
 ﻿using SystemModelling.SMO.Elements;
 
-namespace SystemModelling.SMO.TransitionOptions;
+namespace SystemModelling.SMO.Transitions;
 
-public class ProbabilitySetTransitionOption : ITransitionOption
+public class ProbabilitySetTransition : ITransition
 {
     private List<ProbabilityOption> _options;
     
-    public ProbabilitySetTransitionOption(List<ProbabilityOption> options)
+    public ProbabilitySetTransition(List<ProbabilityOption> options)
     {
         _options = options;
 
@@ -45,7 +45,7 @@ public class ProbabilitySetTransitionOption : ITransitionOption
             sum += option.Probability;
             if (randomValue <= sum)
             {
-                return option.Element;
+                return option.Transition.Next;
             }
         }
 

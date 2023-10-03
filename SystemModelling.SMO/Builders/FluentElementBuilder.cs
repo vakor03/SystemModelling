@@ -1,6 +1,5 @@
 ﻿using SystemModelling.SMO.Elements;
 using SystemModelling.SMO.Enums;
-using SystemModelling.SMO.TransitionOptions;
 
 namespace SystemModelling.SMO.Builders;
 

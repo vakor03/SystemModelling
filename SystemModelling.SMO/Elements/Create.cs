@@ -13,7 +13,7 @@ public class Create : Element
     {
         base.OutAct();
         TNext = TCurrent + GetDelay();
-        TransitionOption?.Next?.InAct();
+        Transition?.Next?.InAct();
     }
 
     public new static FluentCreateBuilder New() => new();

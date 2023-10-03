@@ -5,5 +5,5 @@ public enum DistributionType
     Constant,
     Exp,
     Normal,
-    Unif
+    Uniform
 }

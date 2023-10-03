@@ -1,7 +1,7 @@
 ﻿using SystemModelling.SMO.Builders;
 using SystemModelling.SMO.Enums;
 using SystemModelling.SMO.Loggers;
-using SystemModelling.SMO.TransitionOptions;
+using SystemModelling.SMO.Transitions;
 
 namespace SystemModelling.SMO.Elements;
 
@@ -13,7 +13,8 @@ public class Element
     public DistributionType Distribution { get; set; }
     public int Quantity { get; set; }
     public State CurrentState { get; set; }
-    public ITransitionOption? TransitionOption { get; set; }
+    public ITransition? Transition { get; set; }
+
     public int Id { get; private set; }
     public static int NextId { get; set; } = 0;
     public double TCurrent { get; set; }
@@ -26,7 +27,7 @@ public class Element
         Distribution = DistributionType.Exp;
         TCurrent = TNext;
         CurrentState = State.Free;
-        TransitionOption = null;
+        Transition = null;
         Id = NextId;
         NextId++;
         Name = "element" + Id;
@@ -40,7 +41,7 @@ public class Element
         Distribution = DistributionType.Constant;
         TCurrent = TNext;
         CurrentState = State.Free;
-        TransitionOption = null;
+        Transition = null;
         Id = NextId;
         NextId++;
         Name = "element" + Id;
@@ -54,7 +55,7 @@ public class Element
         Distribution = DistributionType.Exp;
         TCurrent = TNext;
         CurrentState = State.Free;
-        TransitionOption = null;
+        Transition = null;
         Id = NextId;
         NextId++;
         Name = "element" + Id;
@@ -67,19 +68,19 @@ public class Element
             DistributionType.Exp => FunRand.Exp(DelayMean),
             DistributionType.Constant => DelayMean,
             DistributionType.Normal => FunRand.Norm(DelayMean, DelayDeviation),
-            DistributionType.Unif => FunRand.Unif(DelayMean, DelayDeviation),
+            DistributionType.Uniform => FunRand.Unif(DelayMean, DelayDeviation),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
 
     public virtual void PrintInfo(ILogger logger)
     {
-        logger.Log($"{Name} state={CurrentState} quantity={Quantity} tNext={TNext}");
+        logger.WriteLine($"{Name} state={CurrentState} quantity={Quantity} tNext={TNext}");
     }
 
     public virtual void PrintResult(ILogger logger)
     {
-        logger.Log($"{Name} quantity={Quantity}");
+        logger.WriteLine($"{Name} quantity={Quantity}");
     }
 
     public virtual void OutAct()
