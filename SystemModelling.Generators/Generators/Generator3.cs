@@ -2,17 +2,17 @@
 
 namespace SystemModelling.Generators.Generators;
 
-public class EvenDistributionGenerator : Generator
+public class Generator3 : Generator
 {
     public double a { get; set; }
     public double c { get; set; }
     
     private double zi;
 
-    public EvenDistributionGenerator(double a, double c, double zDefault = 1) {
+    public Generator3(double a, double c, double zDefault = 1) {
         this.a = a;
         this.c = c;
-        zi = zDefault;
+        zi = 0.3;
     }
 
     public override double Next()

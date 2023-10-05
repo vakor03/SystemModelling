@@ -15,7 +15,7 @@ namespace SystemModelling.Generators
             _generator = generator;
             _logger = logger ?? new NullLogger();
         }
-        
+
         public GeneratorAnalytics(Generator generator, int count, ILogger? logger = null) : this(generator, logger)
         {
             GenerateNewValues(count);
@@ -28,6 +28,7 @@ namespace SystemModelling.Generators
             _logger.WriteLine($"Mean: {CalculateMean()}");
             _logger.WriteLine($"Variance: {CalculateVariance()}");
         }
+
         public double CalculateMean()
         {
             return _generatedValues.Average();
@@ -49,30 +50,33 @@ namespace SystemModelling.Generators
             _logger.WriteLine($"Is successful: {isSuccessful}");
             return isSuccessful;
         }
-        
+
         public bool CheckChiSquared(int intervalsCount)
         {
-            double chiSquared = CalculateChiSquared(intervalsCount,out int outIntervalsCount);
-            _logger.WriteLine($"Intervals: {intervalsCount} -> {outIntervalsCount}");
+            double chiSquared = CalculateChiSquared(intervalsCount, out int outIntervalsCount);
             return CheckChiSquared(chiSquared, outIntervalsCount);
         }
 
         public double CalculateChiSquared(int defaultIntervalsCount, out int outIntervalsCount)
         {
             List<Interval> intervals = _generatedValues.SplitIntoIntervals(defaultIntervalsCount);
+            // intervals.PrintIntervals();
             intervals.UniteSmallIntervals();
             outIntervalsCount = intervals.Count;
+            _logger.WriteLine($"Intervals: {defaultIntervalsCount} -> {outIntervalsCount}");
+
 
             double chiSquared = FindChiSquared(intervals, _generator.PiFunc, _generatedValues.Length);
             return chiSquared;
         }
 
-        public static double FindChiSquared(List<Interval> intervals, Func<double,double, double> piFunc, int numberOfElements)
+        public static double FindChiSquared(List<Interval> intervals, Func<double, double, double> piFunc,
+            int numberOfElements)
         {
             double chiSquared = 0;
             foreach (var interval in intervals)
             {
-                var npiValue = (piFunc(interval.Start,interval.End)) * numberOfElements;
+                var npiValue = (piFunc(interval.Start, interval.End)) * numberOfElements;
                 chiSquared += Math.Pow(interval.ElementsCount - npiValue, 2) / npiValue;
             }
 

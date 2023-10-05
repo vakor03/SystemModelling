@@ -2,12 +2,12 @@
 
 namespace SystemModelling.Generators.Generators;
 
-public class NormalGenerator : Generator
+public class Generator2 : Generator
 {
     public double a { get; set; }
     public double Sigma { get; set; }
 
-    public NormalGenerator(double a, double sigma)
+    public Generator2(double a, double sigma)
     {
         this.a = a;
         Sigma = sigma;

@@ -8,7 +8,7 @@ public static class IntervalExtensions
     {
         foreach (var interval in intervals)
         {
-            Console.WriteLine($"{interval.Start} {interval.End} {interval.ElementsCount}");
+            Console.WriteLine($"{interval.Start} {interval.ElementsCount}");
         }
     }
 
