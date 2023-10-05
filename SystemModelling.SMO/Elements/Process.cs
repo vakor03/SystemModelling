@@ -1,8 +1,8 @@
 ﻿#region
 
 using System.Text;
+using SystemModelling.Shared;
 using SystemModelling.SMO.Builders;
-using SystemModelling.SMO.Loggers;
 
 #endregion
 

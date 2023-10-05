@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 
-namespace SystemModelling.Generators;
+namespace SystemModelling.Generators.Intervals;
 
 public static class IntervalExtensions
 {

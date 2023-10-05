@@ -1,4 +1,4 @@
-﻿namespace SystemModelling.Generators;
+﻿namespace SystemModelling.Generators.Generators;
 
 public abstract class Generator
 {
@@ -8,4 +8,6 @@ public abstract class Generator
     {
         return Enumerable.Range(0, count).Select(_ => Next()).ToArray();
     }
+
+    public abstract Func<double, double, double> PiFunc { get; }
 }

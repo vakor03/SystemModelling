@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemModelling.Generators"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemModelling.SMO", "SystemModelling.SMO\SystemModelling.SMO.csproj", "{C3173507-8935-4B6F-8233-CE25C7F93059}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemModelling.Shared", "SystemModelling.Shared\SystemModelling.Shared.csproj", "{8F887758-01F3-45E0-B468-47F4DC4CD396}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{C3173507-8935-4B6F-8233-CE25C7F93059}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3173507-8935-4B6F-8233-CE25C7F93059}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3173507-8935-4B6F-8233-CE25C7F93059}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F887758-01F3-45E0-B468-47F4DC4CD396}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F887758-01F3-45E0-B468-47F4DC4CD396}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F887758-01F3-45E0-B468-47F4DC4CD396}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F887758-01F3-45E0-B468-47F4DC4CD396}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

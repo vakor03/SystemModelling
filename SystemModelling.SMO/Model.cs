@@ -1,5 +1,5 @@
-﻿using SystemModelling.SMO.Elements;
-using SystemModelling.SMO.Loggers;
+﻿using SystemModelling.Shared;
+using SystemModelling.SMO.Elements;
 
 namespace SystemModelling.SMO;
 

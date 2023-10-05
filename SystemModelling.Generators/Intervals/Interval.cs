@@ -1,4 +1,4 @@
-﻿namespace SystemModelling.Generators;
+﻿namespace SystemModelling.Generators.Intervals;
 
 public struct Interval
 {

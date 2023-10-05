@@ -1,4 +1,6 @@
-﻿namespace SystemModelling.Generators;
+﻿using MathNet.Numerics;
+
+namespace SystemModelling.Generators.Generators;
 
 public class EvenDistributionGenerator : Generator
 {
@@ -18,5 +20,13 @@ public class EvenDistributionGenerator : Generator
         var z1 = (a * zi) % c;
         zi = z1;
         return z1 / c;
+    }
+
+    public override Func<double, double, double> PiFunc {
+        get
+        {
+            Func<double, double, double> piFunc = (start, end) => Integrate.OnClosedInterval(_ => 1, start, end);
+            return piFunc;
+        }
     }
 }
