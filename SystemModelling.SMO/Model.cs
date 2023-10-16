@@ -15,7 +15,8 @@ public class Model
     public Model(List<Element> elements)
     {
         _elements = elements;
-        _logger = new ConsoleLogger();
+        // _logger = new ConsoleLogger();
+        _logger = new FileLogger("log.txt");
         _tNext = 0;
         _tCurrent = 0;
     }
@@ -29,15 +30,15 @@ public class Model
         while (_tCurrent < time)
         {
             _tNext = FindSmallestTNext(out _currentElement);
-
-            LogCurrentEvent();
-
+            
             DoAllElementsStatistics();
 
             _tCurrent = _tNext;
-
+            // LogCurrentEvent();
+            
             UpdateTCurrentInAllElements();
-
+            
+            _logger.WriteLine("");
             ActElementsWithCurrentTNext();
 
             PrintElementsInfo();
@@ -53,6 +54,8 @@ public class Model
             if (Math.Abs(element.TNext - _tCurrent) < COMPARISON_TOLERANCE)
             {
                 element.OutAct();
+                LogCurrentEvent(element);
+                element.LogTransition(_logger);
             }
         }
     }
@@ -73,9 +76,9 @@ public class Model
         }
     }
 
-    private void LogCurrentEvent()
+    private void LogCurrentEvent(Element currentElement)
     {
-        _logger.WriteLine($"\nIt's time for event in {_currentElement.Name}, time = {_tNext}");
+        _logger.WriteLine($"It's time for event in {currentElement.Name}, time = {_tCurrent}");
     }
 
     private double FindSmallestTNext(out Element correspondingElement)
@@ -83,12 +86,12 @@ public class Model
         double result = Double.MaxValue;
         correspondingElement = null;
 
-        foreach (var element1 in _elements)
+        foreach (var element in _elements)
         {
-            if (element1.TNext < result)
+            if (element.TNext < result)
             {
-                result = element1.TNext;
-                correspondingElement = element1;
+                result = element.TNext;
+                correspondingElement = element;
             }
         }
 

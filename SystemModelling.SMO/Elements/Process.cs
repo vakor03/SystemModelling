@@ -1,132 +1,149 @@
-﻿#region
-
-using System.Text;
+﻿using System.Text;
 using SystemModelling.Shared;
 using SystemModelling.SMO.Builders;
 
-#endregion
-
 namespace SystemModelling.SMO.Elements;
 
-public class Process : Element, ICloneable<Process>
+public class Process : Element
 {
-    private int _failure;
-    private int _maxQueue;
-    private double _meanLoad;
+    public int Queue { get; set; } = 0;
+    public int MaxQueue { get; set; }
+    public int Failure { get; private set; } = 0;
+
     private double _meanQueue;
-    private int _queue;
 
-    private StringBuilder _sb = new();
+    private readonly Subprocess[] _subprocesses;
 
-    public Process(double delay, int maxQueue = Int32.MaxValue) : base(delay)
+    public Process(int subprocessesCount)
     {
-        _queue = 0;
-        _meanQueue = 0;
-
-        _maxQueue = maxQueue;
+        _subprocesses = CreateSubprocesses(subprocessesCount);
     }
-
-    public int Queue => _queue;
-
-    public int MaxQueue
-    {
-        get => _maxQueue;
-        set => _maxQueue = value;
-    }
-
-    public int Failure => _failure;
-
-    public double MeanQueue => _meanQueue;
 
     public override void InAct()
     {
         base.InAct();
 
-        if (CurrentState == State.Free)
+        foreach (var subprocess in _subprocesses)
         {
-            CurrentState = State.Busy;
-            TNext = TCurrent + GetDelay();
+            if (!subprocess.IsBusy)
+            {
+                SubprocessInAct(subprocess);
+                UpdateState();
+                return;
+            }
+        }
+
+        if (Queue < MaxQueue)
+        {
+            Queue++;
         }
         else
         {
-            if (_queue < _maxQueue)
-            {
-                _queue += 1;
-            }
-            else
-            {
-                _failure++;
-            }
+            Failure++;
         }
+
+        UpdateState();
+    }
+
+    private void UpdateState()
+    {
+        CurrentState = Queue switch
+        {
+            0 => State.Free,
+            _ => State.Busy
+        };
     }
 
     public override void OutAct()
     {
         base.OutAct();
 
-        ActNextElementIfNeeded();
-        TNext = double.MaxValue;
-        CurrentState = State.Free;
-
-        if (_queue > 0)
+        foreach (var subprocess in _subprocesses)
         {
-            _queue--;
-            CurrentState = State.Busy;
-            TNext = TCurrent + GetDelay();
+            if (subprocess.TNext <= TCurrent && subprocess.IsBusy)
+            {
+                SubprocessOutAct(subprocess);
+
+                if (Queue > 0)
+                {
+                    Queue--;
+                    SubprocessInAct(subprocess);
+                }
+            }
         }
+        UpdateTNext();
+        UpdateState();
     }
 
-    private void ActNextElementIfNeeded()
+    private void SubprocessOutAct(Subprocess subprocess)
     {
-        Element? nextElement = Transition?.Next;
-        if (nextElement != null)
-        {
-            Console.WriteLine($"Process {Name} -> {nextElement.Name}");
-            nextElement.InAct();
-        }
-        else
-        {
-            Console.WriteLine($"Process {Name} -> null");
-        }
+        subprocess.IsBusy = false;
+        subprocess.TNext = Double.MaxValue;
+        Transition?.Next?.InAct();
     }
 
-    public override void PrintInfo(ILogger logger)
+    private void SubprocessInAct(Subprocess subprocess)
     {
-        base.PrintInfo(logger);
-        // logger.Write($"failure = {_failure}");
-        // logger.Write($"Queue: {_queue}");
+        subprocess.TNext = TCurrent + GetDelay();
+        subprocess.IsBusy = true;
+
+        UpdateTNext();
     }
 
-    public override void PrintResult(ILogger logger)
+    private void UpdateTNext()
     {
-        base.PrintResult(logger);
-        _sb.Clear();
-
-        _sb.AppendLine($"mean length of queue = {_meanQueue / TCurrent}");
-        _sb.AppendLine($"mean load = {_meanLoad / TCurrent}");
-        _sb.AppendLine($"failure probability = {(double)_failure / Quantity}");
-        logger.WriteLine(
-            _sb.ToString());
-
-        _sb.Clear();
+        TNext = _subprocesses.Min(sp => sp.TNext);
     }
 
     public override void DoStatistics(double delta)
     {
-        _meanQueue += _queue * delta;
-        _meanLoad += (CurrentState == State.Busy ? 1 : 0) * delta;
+        _meanQueue += Queue * delta;
+        foreach (var subprocess in _subprocesses)
+        {
+            subprocess.DoStatistics(delta);
+        }
+    }
+
+
+    public override void PrintInfo(ILogger logger)
+    {
+        logger.WriteLine($"{Name} loaded={_subprocesses.Count(sp=>sp.IsBusy)}/{_subprocesses.Length}" +
+                         $" queue={Queue} failured={Failure} quantity={Quantity} tNext={TNext}");
+    }
+
+    private readonly StringBuilder _sb = new();
+
+    public override void PrintResult(ILogger logger)
+    {
+        base.PrintResult(logger);
+
+        _sb.AppendLine($"Mean queue: {_meanQueue / TCurrent}");
+        foreach (var subprocess in _subprocesses)
+        {
+            _sb.AppendLine($"\t{subprocess.Name} mean load: {subprocess.MeanLoad / TCurrent}");
+        }
+
+        _sb.AppendLine($"Failure probability: {(double)Failure / Quantity}");
+        logger.WriteLine(_sb.ToString());
+
+        _sb.Clear();
+    }
+
+    private Subprocess[] CreateSubprocesses(int subprocessesCount)
+    {
+        var subprocesses = new Subprocess[subprocessesCount];
+        for (var i = 0; i < subprocessesCount; i++)
+        {
+            subprocesses[i] = new Subprocess
+            {
+                Name = $"subprocess {i}",
+                TNext = Double.MaxValue,
+                IsBusy = false
+            };
+        }
+
+        return subprocesses;
     }
 
     public new static FluentProcessBuilder New() => new();
-
-    public Process Clone()
-    {
-        return New()
-            .WithMaxQueue(MaxQueue)
-            .WithDistribution(Distribution)
-            .WithName(Name + "Clone")
-            .WithDelayMean(DelayMean)
-            .WithDelayDeviation(DelayDeviation)
-            .Build();
-    }
 }

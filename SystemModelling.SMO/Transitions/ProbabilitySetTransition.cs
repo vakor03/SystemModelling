@@ -27,8 +27,6 @@ public class ProbabilitySetTransition : ITransition
         return sum <= 1f;
     }
 
-  
-
     public Element? Next => GetNextElement();
 
     private Element? GetNextElement()

@@ -8,7 +8,7 @@ public class FluentCreateBuilder : FluentElementBuilder<FluentCreateBuilder>
 
     public override Create Build()
     {
-        Create create = new Create(DelayMean)
+        Create create = new Create
         {
             Name = Name,
             DelayMean = DelayMean,
