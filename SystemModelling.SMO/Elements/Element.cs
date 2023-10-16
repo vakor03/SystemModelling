@@ -15,7 +15,7 @@ public class Element
     protected State CurrentState { get; set; }
     public ITransition? Transition { get; set; }
 
-    public int Id { get; private set; }
+    public int Id { get; init; }
     public static int NextId { get; set; } = 0;
     public double TCurrent { get; set; }
     public double TNext { get; set; }
@@ -25,47 +25,6 @@ public class Element
         Id = NextId++;
         Name = $"element {Id}";
     }
-
-    // public Element()
-    // {
-    //     TNext = Double.MaxValue;
-    //     DelayMean = 1.0;
-    //     Distribution = DistributionType.Exp;
-    //     TCurrent = TNext;
-    //     CurrentState = State.Free;
-    //     Transition = null;
-    //     Id = NextId;
-    //     NextId++;
-    //     Name = "element" + Id;
-    // }
-
-    // public Element(double delay)
-    // {
-    //     Name = "anonymus";
-    //     TNext = 0.0;
-    //     DelayMean = delay;
-    //     Distribution = DistributionType.Constant;
-    //     TCurrent = TNext;
-    //     CurrentState = State.Free;
-    //     Transition = null;
-    //     Id = NextId;
-    //     NextId++;
-    //     Name = "element" + Id;
-    // }
-
-    // public Element(String nameOfElement, double delay)
-    // {
-    //     Name = nameOfElement;
-    //     TNext = 0.0;
-    //     DelayMean = delay;
-    //     Distribution = DistributionType.Exp;
-    //     TCurrent = TNext;
-    //     CurrentState = State.Free;
-    //     Transition = null;
-    //     Id = NextId;
-    //     NextId++;
-    //     Name = "element" + Id;
-    // }
 
     protected double GetDelay()
     {
@@ -81,7 +40,7 @@ public class Element
 
     public virtual void PrintInfo(ILogger logger)
     {
-        logger.WriteLine($"{Name} state={CurrentState} quantity={Quantity} tNext={TNext}");
+        logger.WriteLine($"{Name} quantity={Quantity} tNext={TNext}");
     }
 
     public virtual void PrintResult(ILogger logger)
@@ -107,7 +66,7 @@ public class Element
     {
     }
 
-    public enum State
+    protected enum State
     {
         Free = 0,
         Busy = 1,

@@ -30,6 +30,7 @@ public class FluentProcessBuilder : FluentElementBuilder<FluentProcessBuilder>
             Distribution = Distribution,
             TNext = Double.MaxValue,
             MaxQueue = MaxQueue,
+            Id = Element.NextId++
         };
         return process;
     }

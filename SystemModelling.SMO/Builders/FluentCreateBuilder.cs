@@ -13,7 +13,8 @@ public class FluentCreateBuilder : FluentElementBuilder<FluentCreateBuilder>
             Name = Name,
             DelayMean = DelayMean,
             DelayDeviation = DelayDeviation,
-            Distribution = Distribution
+            Distribution = Distribution,
+            Id = Element.NextId++
         };
         return create;
     }

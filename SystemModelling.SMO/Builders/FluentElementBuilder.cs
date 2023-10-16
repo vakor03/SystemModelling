@@ -49,7 +49,8 @@ public class FluentElementBuilder<T> where T : FluentElementBuilder<T>
             Name = Name,
             DelayMean = DelayMean,
             DelayDeviation = DelayDeviation,
-            Distribution = Distribution
+            Distribution = Distribution,
+            Id = Element.NextId++
         };
         return element;
     }
