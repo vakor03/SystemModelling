@@ -8,17 +8,33 @@ namespace SystemModelling.SMO.Elements;
 public class Element
 {
     public string Name { get; set; }
-    public double DelayMean { get; set; }
-    public double DelayDeviation { get; set; }
-    public DistributionType Distribution { get; set; }
     public int Quantity { get; set; }
     protected State CurrentState { get; set; }
     public ITransition? Transition { get; set; }
 
+    #region DelayGenerator
+
+    public double DelayMean { get; set; }
+    public double DelayDeviation { get; set; }
+    public DistributionType Distribution { get; set; }
+
+    #endregion
+
+    #region Id
+
     public int Id { get; init; }
     public static int NextId { get; set; } = 0;
+
+    #endregion
+    
+    #region Time
+
     public double TCurrent { get; set; }
     public double TNext { get; set; }
+
+    #endregion
+    
+    public ILogger Logger { get; set; }
 
     public Element()
     {
@@ -53,9 +69,17 @@ public class Element
         Quantity++;
     }
     
-    public virtual void LogTransition(ILogger logger)
+    public virtual void LogTransition(Element? transitionElement)
     {
-        logger.WriteLine($"{Name} -> {Transition?.Next?.Name ?? "null"}");
+        Logger.WriteLine($"{Name} -> {transitionElement?.Name ?? "null"}");
+    }
+
+    protected void PerformTransitionToNext()
+    {
+        Element? transitionElement = Transition?.Next;
+        
+        LogTransition(transitionElement);
+        transitionElement?.InAct();
     }
 
     public virtual void InAct()

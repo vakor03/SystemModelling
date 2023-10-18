@@ -8,9 +8,14 @@ public class Model
     private Element _currentElement;
     private List<Element> _elements;
     private ILogger _logger;
+
+    public ILogger Logger => _logger;
+
     private double _tCurrent;
     private double _tNext;
     private const double COMPARISON_TOLERANCE = 0.000001;
+
+    public event Action<ILogger>? OnResultsPrinted;
 
     public Model(List<Element> elements)
     {
@@ -19,6 +24,11 @@ public class Model
         _logger = new FileLogger("log.txt");
         _tNext = 0;
         _tCurrent = 0;
+        
+        foreach (var element in _elements)
+        {
+            element.Logger = _logger;
+        }
     }
 
     public Model(params Element[] elements) : this(new List<Element>(elements))
@@ -29,22 +39,25 @@ public class Model
     {
         while (_tCurrent < time)
         {
+            _logger.WriteLine("");
+            
             _tNext = FindSmallestTNext(out _currentElement);
-            
-            DoAllElementsStatistics();
 
-            _tCurrent = _tNext;
-            // LogCurrentEvent();
+            DoAllElementsStatistics();
             
+            _tCurrent = _tNext;
+
             UpdateTCurrentInAllElements();
             
-            _logger.WriteLine("");
+            LogAndOutActElement(_currentElement);
+            
             ActElementsWithCurrentTNext();
 
             PrintElementsInfo();
         }
 
         PrintResults();
+        OnResultsPrinted?.Invoke(_logger);
     }
 
     private void ActElementsWithCurrentTNext()
@@ -53,11 +66,17 @@ public class Model
         {
             if (Math.Abs(element.TNext - _tCurrent) < COMPARISON_TOLERANCE)
             {
-                element.OutAct();
-                LogCurrentEvent(element);
-                element.LogTransition(_logger);
+                LogAndOutActElement(element);
             }
         }
+    }
+
+    private void LogAndOutActElement(Element element)
+    {
+        LogCurrentEvent(element);
+        
+        element.OutAct();
+        // element.LogTransition(_logger);
     }
 
     private void UpdateTCurrentInAllElements()

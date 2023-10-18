@@ -8,7 +8,8 @@ public class Create : Element
     {
         base.OutAct();
         TNext = TCurrent + GetDelay();
-        Transition?.Next?.InAct();
+        
+        PerformTransitionToNext();
     }
 
     public new static FluentCreateBuilder New() => new();

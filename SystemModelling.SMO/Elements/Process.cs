@@ -1,27 +1,52 @@
-﻿using System.Text;
+﻿#region
+
+using System.Text;
 using SystemModelling.Shared;
 using SystemModelling.SMO.Builders;
+
+#endregion
 
 namespace SystemModelling.SMO.Elements;
 
 public class Process : Element
 {
-    public int Queue { get; set; } = 0;
-    public int MaxQueue { get; set; }
-    public int Failure { get; private set; } = 0;
-
-    private double _meanQueue;
+    private readonly StringBuilder _sb = new();
 
     private readonly Subprocess[] _subprocesses;
+    private int _failure = 0;
+
+    private double _meanQueue;
 
     public Process(int subprocessesCount)
     {
         _subprocesses = CreateSubprocesses(subprocessesCount);
     }
 
+    public int Queue { get; set; } = 0;
+
+    public int MaxQueue { get; set; }
+
+    private int Failure
+    {
+        get => _failure;
+        set
+        {
+            _failure = value;
+            OnFailure?.Invoke();
+        }
+    }
+
+    public int SubprocessesCount => _subprocesses.Length;
+
+    public event Action? OnEnter;
+    public event Action? OnSuccess;
+    public event Action? OnFailure;
+    public event Action? OnQueueChanged;
+
     public override void InAct()
     {
         base.InAct();
+        OnEnter?.Invoke();
 
         foreach (var subprocess in _subprocesses)
         {
@@ -36,6 +61,7 @@ public class Process : Element
         if (Queue < MaxQueue)
         {
             Queue++;
+            OnQueueChanged?.Invoke();
         }
         else
         {
@@ -57,6 +83,7 @@ public class Process : Element
     public override void OutAct()
     {
         base.OutAct();
+        OnSuccess?.Invoke();
 
         foreach (var subprocess in _subprocesses)
         {
@@ -67,10 +94,12 @@ public class Process : Element
                 if (Queue > 0)
                 {
                     Queue--;
+                    OnQueueChanged?.Invoke();
                     SubprocessInAct(subprocess);
                 }
             }
         }
+
         UpdateTNext();
         UpdateState();
     }
@@ -79,7 +108,9 @@ public class Process : Element
     {
         subprocess.IsBusy = false;
         subprocess.TNext = Double.MaxValue;
-        Transition?.Next?.InAct();
+        
+        
+        PerformTransitionToNext();
     }
 
     private void SubprocessInAct(Subprocess subprocess)
@@ -107,11 +138,9 @@ public class Process : Element
 
     public override void PrintInfo(ILogger logger)
     {
-        logger.WriteLine($"{Name} loaded={_subprocesses.Count(sp=>sp.IsBusy)}/{_subprocesses.Length}" +
+        logger.WriteLine($"{Name} loaded={_subprocesses.Count(sp => sp.IsBusy)}/{_subprocesses.Length}" +
                          $" queue={Queue} failured={Failure} quantity={Quantity} tNext={TNext}");
     }
-
-    private readonly StringBuilder _sb = new();
 
     public override void PrintResult(ILogger logger)
     {

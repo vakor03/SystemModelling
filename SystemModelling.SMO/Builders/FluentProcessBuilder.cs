@@ -6,6 +6,7 @@ public class FluentProcessBuilder : FluentElementBuilder<FluentProcessBuilder>
 {
     protected int MaxQueue = 0;
     protected int Quantity = 1;
+
     public static FluentProcessBuilder New() => new();
 
     public FluentProcessBuilder WithMaxQueue(int maxQueue)
@@ -20,6 +21,15 @@ public class FluentProcessBuilder : FluentElementBuilder<FluentProcessBuilder>
         return this;
     }
 
+    public FluentProcessBuilder WithStartedCount(int startedCount)
+    {
+        StartedCount = startedCount;
+        return this;
+    }
+
+    public int StartedCount { get; set; }
+
+
     public override Process Build()
     {
         Process process = new Process(Quantity)
@@ -32,6 +42,11 @@ public class FluentProcessBuilder : FluentElementBuilder<FluentProcessBuilder>
             MaxQueue = MaxQueue,
             Id = Element.NextId++
         };
+
+        for (int i = 0; i < StartedCount; i++)
+        {
+            process.InAct();
+        }
         return process;
     }
 }

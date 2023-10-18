@@ -8,7 +8,7 @@ using SystemModelling.SMO.Transitions;
 // RunDefaultTask();
 // RunTask3();
 // RunTask6();
-RunTask5();
+// RunTask5();
 
 static void RunDefaultTask()
 {
@@ -37,6 +37,7 @@ static void RunTask3()
         .WithDelayMean(2.0)
         .WithName("CREATOR")
         .WithDistribution(DistributionType.Exp)
+        .WithStartedDelay(0.1)
         .Build();
     
     Process process1 = Process.New()
