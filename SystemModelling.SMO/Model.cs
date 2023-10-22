@@ -99,6 +99,11 @@ public class Model
     {
         return _elements.Sum(el => el.ClientTimeProcessing)/_tCurrent;
     }
+    
+    private double CalculateMeanTimeInSystem()
+    {
+        return _elements.Sum(el => el.ClientTimeProcessing)/_elements.Where(el=>el is Create).Sum(el => el.Quantity);
+    }
 
     private void LogCurrentEvent(Element currentElement)
     {
@@ -139,5 +144,6 @@ public class Model
         }
 
         _logger.WriteLine($"Mean clients in system: {CalculateMeanClientsInSystem()}");
+        _logger.WriteLine($"Mean time in system: {CalculateMeanTimeInSystem()}");
     }
 }

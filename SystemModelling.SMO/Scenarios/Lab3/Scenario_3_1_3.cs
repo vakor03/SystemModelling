@@ -9,7 +9,7 @@ public class Scenario_3_1_3 : Scenario_3_1
     {
         Create create = Create.New()
             .WithName("Create")
-            .WithDelayMean(0.5)
+            .WithDelayMean(0.15)
             .WithDistribution(DistributionType.Exp)
             .Build();
 

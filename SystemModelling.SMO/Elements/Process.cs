@@ -37,6 +37,8 @@ public class Process : Element
     }
 
     public int SubprocessesCount => _subprocesses.Length;
+    private double TotalTimeLeave { get; set; }
+    private double PrevTimeLeave { get; set; }
 
     public event Action? OnEnter;
     public event Action? OnSuccess;
@@ -102,6 +104,18 @@ public class Process : Element
 
         UpdateTNext();
         UpdateState();
+
+        UpdateTotalTimeLeaved();
+    }
+
+    private void UpdateTotalTimeLeaved()
+    {
+        if (PrevTimeLeave != 0)
+        {
+            TotalTimeLeave += TCurrent - PrevTimeLeave;
+        }
+
+        PrevTimeLeave = TCurrent;
     }
 
     private void SubprocessOutAct(Subprocess subprocess)
@@ -154,6 +168,7 @@ public class Process : Element
             _sb.AppendLine($"\t{subprocess.Name} mean load: {subprocess.MeanLoad / TCurrent}");
         }
 
+        _sb.AppendLine($"Mean time between leaving: {TotalTimeLeave / Quantity}");
         _sb.AppendLine($"Failure probability: {(double)Failure / Quantity}");
         logger.WriteLine(_sb.ToString());
 
