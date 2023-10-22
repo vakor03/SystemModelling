@@ -133,6 +133,8 @@ public class Process : Element
         {
             subprocess.DoStatistics(delta);
         }
+        
+        ClientTimeProcessing += (_subprocesses.Count(sp=>sp.IsBusy) + Queue) * delta;
     }
 
 

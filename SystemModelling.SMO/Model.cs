@@ -43,7 +43,7 @@ public class Model
             
             _tNext = FindSmallestTNext(out _currentElement);
 
-            DoAllElementsStatistics();
+            DoStatistics();
             
             _tCurrent = _tNext;
 
@@ -87,12 +87,17 @@ public class Model
         }
     }
 
-    private void DoAllElementsStatistics()
+    private void DoStatistics()
     {
         foreach (var element in _elements)
         {
             element.DoStatistics(_tNext - _tCurrent);
         }
+    }
+    
+    private double CalculateMeanClientsInSystem()
+    {
+        return _elements.Sum(el => el.ClientTimeProcessing)/_tCurrent;
     }
 
     private void LogCurrentEvent(Element currentElement)
@@ -132,5 +137,7 @@ public class Model
         {
             element.PrintResult(_logger);
         }
+
+        _logger.WriteLine($"Mean clients in system: {CalculateMeanClientsInSystem()}");
     }
 }

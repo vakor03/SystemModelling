@@ -35,6 +35,7 @@ public class Element
     #endregion
     
     public ILogger Logger { get; set; }
+    public double ClientTimeProcessing { get; set; }
 
     public Element()
     {
