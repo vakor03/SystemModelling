@@ -2,7 +2,7 @@
 
 public enum PatientType
 {
-    CompletedExaminationAndReferred,
-    IncompleteExaminationAdmission,
-    JustAdmittedForExamination
+    Type1,
+    Type2,
+    Type3
 }

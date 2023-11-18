@@ -6,15 +6,14 @@ namespace SystemModelling.ModelWIthItems.Elements;
 public partial class Processor{
     public class FluentProcessBuilder : FluentElementBuilder<FluentProcessBuilder>
     {
-        protected int MaxQueue = 0;
-        protected int Quantity = 1;
+        protected int SubprocessesCount = 1;
         protected IQueue<Patient> Queue = new SimpleQueue<Patient>(Int32.MaxValue);
 
         public static FluentProcessBuilder New() => new();
     
         public FluentProcessBuilder WithProcessesCount(int count)
         {
-            Quantity = count;
+            SubprocessesCount = count;
             return this;
         }
         
@@ -29,14 +28,10 @@ public partial class Processor{
             Processor process = new Processor
             {
                 Name = Name,
-                // DelayMean = DelayMean,
-                // DelayDeviation = DelayDeviation,
-                // Distribution = Distribution,
                 TNext = Double.MaxValue,
-                DelayGenerator = DelayGeneratorFactory.Create(DelayMean, DelayDeviation, Distribution),
+                DelayGenerator = DelayGenerator,
                 _patientsQueue = Queue,
-                _subprocesses = GenerateSubprocesses(Quantity)
-                // Id = Element.NextId++
+                _subprocesses = GenerateSubprocesses(SubprocessesCount)
             };
 
             return process;

@@ -1,16 +1,17 @@
 ﻿namespace SystemModelling.ModelWIthItems.DelayGenerators;
 
-public class UniformDelayGenerator : IDelayGenerator
+public class Uniform : IRandomValueProvider
 {
     private readonly double _min;
     private readonly double _max;
-    public UniformDelayGenerator(double delayMean, double delayDeviation)   
+
+    public Uniform(double min, double max)
     {
-        _min = delayMean - delayDeviation;
-        _max = delayMean + delayDeviation;
+        _min = min;
+        _max = max;
     }
 
-    public double GetDelay()
+    public double GetRandomValue()
     {
         double a = 0;
         while (a == 0)

@@ -2,19 +2,19 @@
 
 namespace SystemModelling.ModelWIthItems.DelayGenerators;
 
-public class ErlangDelayGenerator : IDelayGenerator
+public class Erlang : IRandomValueProvider
 {
     private readonly double _timeMean;
     private readonly int _k;
-    public ErlangDelayGenerator(double timeMean, int k)
+    public Erlang(double timeMean, int k)
     {
         _timeMean = timeMean;
         _k = k;
     }
 
-    public double GetDelay()
+    public double GetRandomValue()
     {
-        Erlang erlangDist = new (_k, _timeMean / _k);
+        MathNet.Numerics.Distributions.Erlang erlangDist = new (_k, _timeMean / _k);
         return erlangDist.Sample();
     }   
 }

@@ -5,5 +5,5 @@ namespace SystemModelling.ModelWIthItems.NextElements;
 
 public interface INextElement
 {
-    Element? GetNextElement(PatientType patientType);
+    Element GetNextElement(PatientType patientType);
 }

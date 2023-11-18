@@ -1,14 +1,14 @@
 ﻿namespace SystemModelling.ModelWIthItems.DelayGenerators;
 
-public class ExponentialDelayGenerator : IDelayGenerator
+public class Exponential : IRandomValueProvider
 {
     private readonly double _timeMean;
-    public ExponentialDelayGenerator(double timeMean)
+    public Exponential(double timeMean)
     {
         _timeMean = timeMean;
     }
 
-    public double GetDelay()
+    public double GetRandomValue()
     {
         double a = 0;
         while (a == 0) {

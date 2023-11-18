@@ -1,6 +1,10 @@
 ﻿namespace SystemModelling.ModelWIthItems.DelayGenerators;
 
-public interface IDelayGenerator
+public interface IDelayGenerator<T> where T : IItem
 {
-    double GetDelay();
+    double GetDelay(T item);
+}
+
+public interface IItem
+{
 }

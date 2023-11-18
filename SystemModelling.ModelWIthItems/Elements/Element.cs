@@ -12,14 +12,13 @@ public partial class Element : IPrintResults
     public string Name { get; protected init; }
     public double TCurrent { get; protected set; }
     public double TNext { get; protected set; }
-    // public Element? Next { get; set; }
     public INextElement Next { get; set; }
-    public IDelayGenerator DelayGenerator { get; protected init; }
+    public IDelayGenerator<Patient> DelayGenerator { get; protected init; }
     public int PatientsEntered { get; protected set; }
     public int PatientsProcessed { get; protected set; }
-
     public int Failures { get;protected set; }
 
+    
     protected Element()
     {
     }
@@ -38,9 +37,9 @@ public partial class Element : IPrintResults
     {
     }
     
-    public double GenerateTNext()
+    public double GenerateTNext(Patient patient)
     {
-        return TCurrent + DelayGenerator.GetDelay();
+        return TCurrent + DelayGenerator.GetDelay(patient);
     }
 
     public void UpdateTCurrent(double tCurrent)
@@ -52,7 +51,6 @@ public partial class Element : IPrintResults
     {
         _sb.Clear();
         _sb.AppendLine($"{Name}:");
-        _sb.Append($"\tTCurrent: {TCurrent}");
         _sb.Append($"\tTNext: {TNext}");
         _sb.AppendLine();
         _sb.Append($"\tEntered: {PatientsEntered}");
@@ -63,7 +61,7 @@ public partial class Element : IPrintResults
         _sb.Clear();
     }
 
-    public void PrintResults(ILogger logger)
+    public virtual void PrintResults(ILogger logger)
     {
     }
 }

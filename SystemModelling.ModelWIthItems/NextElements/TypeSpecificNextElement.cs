@@ -5,19 +5,29 @@ namespace SystemModelling.ModelWIthItems.NextElements;
 
 public class TypeSpecificNextElement : INextElement
 {
-    private Dictionary<PatientType, Element?> _nextElements = new();
+    private Dictionary<PatientType, Element> _nextElements = new();
+
+    public TypeSpecificNextElement(Dictionary<PatientType, Element> nextElements)
+    {
+        _nextElements = nextElements;
+    }
     
-    public void AddNextElement(PatientType patientType, Element? nextElement)
+    public TypeSpecificNextElement()
+    {
+    }
+
+    public void AddNextElement(PatientType patientType, Element nextElement)
     {
         _nextElements.Add(patientType, nextElement);
     }
-    public Element? GetNextElement(PatientType patientType)
+
+    public Element GetNextElement(PatientType patientType)
     {
         if (_nextElements.TryGetValue(patientType, out var element))
         {
             return element;
         }
 
-        return null;
+        throw new Exception($"Next element for patient type {patientType} not found");
     }
 }

@@ -3,6 +3,14 @@ using SystemModelling.Shared;
 
 namespace SystemModelling.ModelWIthItems;
 
+public class Labaratory : Processor
+{
+    public void Prf()
+    {
+        Console.WriteLine("Prf");
+    }
+}
+
 public class Model : IPrintResults
 {
     public double SimulationTime { get; set; }

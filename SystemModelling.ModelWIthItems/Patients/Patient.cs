@@ -1,4 +1,6 @@
-﻿namespace SystemModelling.ModelWIthItems.Patients;
+﻿using SystemModelling.ModelWIthItems.DelayGenerators;
+
+namespace SystemModelling.ModelWIthItems.Patients;
 
 public class PatientStats
 {
@@ -7,7 +9,8 @@ public class PatientStats
     public double Probability { get; set; }
 }
 
-public class Patient
+public class Patient : IItem
 {
     public PatientType PatientType { get; set; }
+    public double CreationTime { get; set; }
 }

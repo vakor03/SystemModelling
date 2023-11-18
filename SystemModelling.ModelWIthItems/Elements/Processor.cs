@@ -11,21 +11,24 @@ public partial class Processor : Element
     private Subprocess[] _subprocesses;
     private int FreeSubprocessesCount => _subprocesses.Count(s => !s.IsBusy);
 
-    private Processor() { }
+    public Processor()
+    {
+    }
 
     public override void InAct(Patient patient)
     {
         base.InAct(patient);
-        
+
         if (HasFreeSubprocesses())
         {
             var subprocess = _subprocesses.First(s => !s.IsBusy);
             SubprocessInAct(subprocess, patient);
         }
-        else if(!_patientsQueue.IsFull())
+        else if (!_patientsQueue.IsFull())
         {
             _patientsQueue.Add(patient);
-        }else
+        }
+        else
         {
             Failures++;
         }
@@ -44,15 +47,16 @@ public partial class Processor : Element
     private void SubprocessInAct(Subprocess subprocess, Patient patient)
     {
         subprocess.IsBusy = true;
-        subprocess.TNext = GenerateTNext();
+        subprocess.TNext = GenerateTNext(patient);
         subprocess.CurrentPatient = patient;
         RecalculateTNext();
     }
-
+public event Action<Patient> OnAfterOutAct; 
     private void SubprocessOutAct(Subprocess subprocess)
     {
         Patient currentPatient = subprocess.CurrentPatient!;
-        Next.GetNextElement(currentPatient.PatientType)?.InAct(currentPatient);
+        Next.GetNextElement(currentPatient.PatientType).InAct(currentPatient);
+        OnAfterOutAct?.Invoke(currentPatient);
 
         subprocess.IsBusy = false;
         subprocess.TNext = Double.MaxValue;
@@ -81,7 +85,7 @@ public partial class Processor : Element
     public override void PrintInfo(ILogger logger)
     {
         base.PrintInfo(logger);
-        logger.WriteLine($"\tQueue: {_patientsQueue.QueueLength}/{_patientsQueue.MaxQueue}");
+        logger.WriteLine($"\tQueue: {_patientsQueue.QueueLength}/{_patientsQueue.MaxQueue}\tSubprocesses:{_subprocesses.Count(s => s.IsBusy)}/{_subprocesses.Length}");
     }
 
     public static FluentProcessBuilder New() => new();

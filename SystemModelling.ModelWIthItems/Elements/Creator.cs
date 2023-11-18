@@ -15,9 +15,10 @@ public partial class Creator : Element
         base.OutAct();
 
         Patient patient = _patientFactory.Create();
-        Next.GetNextElement(patient.PatientType)?.InAct(patient);
+        patient.CreationTime = TCurrent;
+        Next.GetNextElement(patient.PatientType).InAct(patient);
 
-        TNext = GenerateTNext();
+        TNext = GenerateTNext(patient);
     }
 
     public static FluentCreateBuilder New() => new();

@@ -21,7 +21,7 @@ public class PatientsPriorityQueue : IQueue<Patient>
             throw new InvalidOperationException("Queue is full");
         }
         
-        if (item.PatientType == PatientType.CompletedExaminationAndReferred)
+        if (item.PatientType == PatientType.Type1)
         {
             _prioritizedPatients.Enqueue(item);
         }
