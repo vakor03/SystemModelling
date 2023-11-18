@@ -8,12 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentAssertions" Version="7.0.0-alpha.2" />
-      <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+      <ProjectReference Include="..\SystemModelling.Shared\SystemModelling.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SystemModelling.Shared\SystemModelling.Shared.csproj" />
+      <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     </ItemGroup>
 
 </Project>
