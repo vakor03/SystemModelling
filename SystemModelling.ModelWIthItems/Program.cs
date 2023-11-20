@@ -4,12 +4,23 @@ using SystemModelling.ModelWIthItems.DelayGenerators;
 using SystemModelling.ModelWIthItems.Elements;
 using SystemModelling.ModelWIthItems.NextElements;
 using SystemModelling.ModelWIthItems.Patients;
+using SystemModelling.Shared;
 
-var model = CreateHospitalModel();
 
-model.SimulationTime = 10000;
+var logger = new FileLogger("results.txt");
 
-model.Simulate();
+for (int i = 0; i < 100; i++)
+{
+    var model = CreateHospitalModel();
+
+    model.SimulationTime = 1_000_000;
+    model.Logger = logger;
+    model.PrintInfo = false;
+
+    model.Simulate();
+}
+
+
 
 static Model CreateHospitalModel()
 {
@@ -56,11 +67,17 @@ static Model CreateHospitalModel()
         .WithDelayGenerator(new Erlang(4.5, 3).ToDelayGenerator())
         .Build();
 
-    Processor prLaboratory = Processor.New()
-        .WithName("Laboratory")
-        .WithProcessesCount(laborantsCount)
-        .WithDelayGenerator(new Erlang(4, 2).ToDelayGenerator())
-        .Build();
+    // Processor prLaboratory = Processor.New()
+    //     .WithName("Laboratory")
+    //     .WithProcessesCount(laborantsCount)
+    //     .WithDelayGenerator(new Erlang(4, 2).ToDelayGenerator())
+    //     .Build();
+
+    Laboratory laboratory = new Laboratory(laborantsCount)
+    {
+        Name = "Laboratory",
+        DelayGenerator = new Erlang(4, 2).ToDelayGenerator()
+    };
 
     Processor prWayToReception = Processor.New()
         .WithName("To Reception")
@@ -76,8 +93,8 @@ static Model CreateHospitalModel()
         { PatientType.Type3, prWayToLaboratory }
     });
     prWayToLaboratory.Next = (SimpleNextElement)prLabRegistry;
-    prLabRegistry.Next = (SimpleNextElement)prLaboratory;
-    prLaboratory.Next = new TypeSpecificNextElement(new Dictionary<PatientType, Element>()
+    prLabRegistry.Next = (SimpleNextElement)laboratory;
+    laboratory.Next = new TypeSpecificNextElement(new Dictionary<PatientType, Element>()
     {
         { PatientType.Type2, prWayToReception },
         { PatientType.Type3, dispose }
@@ -85,10 +102,10 @@ static Model CreateHospitalModel()
     prWayToChamber.Next = (SimpleNextElement)dispose;
     prWayToReception.Next = (SimpleNextElement)prReception;
 
-    prLaboratory.OnAfterOutAct += (patient) => patient.PatientType = PatientType.Type1;
+    laboratory.OnAfterOutAct += (patient) => patient.PatientType = PatientType.Type1;
 
     Model model = new Model();
-    model.AddElements(creator, dispose, prReception, prWayToChamber, prWayToLaboratory, prLabRegistry, prLaboratory,
+    model.AddElements(creator, dispose, prReception, prWayToChamber, prWayToLaboratory, prLabRegistry, laboratory,
         prWayToReception);
 
     return model;

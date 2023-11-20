@@ -9,11 +9,12 @@ namespace SystemModelling.ModelWIthItems.Elements;
 public partial class Element : IPrintResults
 {
     protected StringBuilder _sb = new();
-    public string Name { get; protected init; }
+
+    public string Name { get; init; }
     public double TCurrent { get; protected set; }
-    public double TNext { get; protected set; }
+    public double TNext { get; set; }
     public INextElement Next { get; set; }
-    public IDelayGenerator<Patient> DelayGenerator { get; protected init; }
+    public IDelayGenerator<Patient> DelayGenerator { get; init; }
     public int PatientsEntered { get; protected set; }
     public int PatientsProcessed { get; protected set; }
     public int Failures { get;protected set; }

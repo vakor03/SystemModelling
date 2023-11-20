@@ -6,7 +6,7 @@ public partial class Creator : Element
 {
     private readonly IPatientFactory _patientFactory = new PatientFactory();
 
-    private Creator()
+    public Creator()
     {
     }
 

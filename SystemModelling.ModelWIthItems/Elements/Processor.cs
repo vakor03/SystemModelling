@@ -6,13 +6,29 @@ namespace SystemModelling.ModelWIthItems.Elements;
 
 public partial class Processor : Element
 {
-    private IQueue<Patient> _patientsQueue;
+    public IQueue<Patient> PatientsQueue { get; set; }
 
     private Subprocess[] _subprocesses;
     private int FreeSubprocessesCount => _subprocesses.Count(s => !s.IsBusy);
 
-    public Processor()
+    public Processor(int subprocessesCount)
     {
+        _subprocesses = GenerateSubprocesses(subprocessesCount);
+        PatientsQueue = new SimpleQueue<Patient>(Int32.MaxValue);
+    }
+    
+    private Subprocess[] GenerateSubprocesses(int subprocessesCount)
+    {
+        var subprocesses = new Subprocess[subprocessesCount];
+        for (int i = 0; i < subprocessesCount; i++)
+        {
+            subprocesses[i] = new Subprocess
+            {
+                TNext = Double.MaxValue
+            };
+        }
+
+        return subprocesses;
     }
 
     public override void InAct(Patient patient)
@@ -24,9 +40,9 @@ public partial class Processor : Element
             var subprocess = _subprocesses.First(s => !s.IsBusy);
             SubprocessInAct(subprocess, patient);
         }
-        else if (!_patientsQueue.IsFull())
+        else if (!PatientsQueue.IsFull())
         {
-            _patientsQueue.Add(patient);
+            PatientsQueue.Add(patient);
         }
         else
         {
@@ -75,9 +91,9 @@ public event Action<Patient> OnAfterOutAct;
 
         RecalculateTNext();
 
-        if (!_patientsQueue.IsEmpty())
+        if (!PatientsQueue.IsEmpty())
         {
-            var nextPatient = _patientsQueue.Get()!;
+            var nextPatient = PatientsQueue.Get()!;
             SubprocessInAct(_subprocesses.First(sp => !sp.IsBusy), nextPatient);
         }
     }
@@ -85,7 +101,7 @@ public event Action<Patient> OnAfterOutAct;
     public override void PrintInfo(ILogger logger)
     {
         base.PrintInfo(logger);
-        logger.WriteLine($"\tQueue: {_patientsQueue.QueueLength}/{_patientsQueue.MaxQueue}\tSubprocesses:{_subprocesses.Count(s => s.IsBusy)}/{_subprocesses.Length}");
+        logger.WriteLine($"\tQueue: {PatientsQueue.QueueLength}/{PatientsQueue.MaxQueue}\tSubprocesses:{_subprocesses.Count(s => s.IsBusy)}/{_subprocesses.Length}");
     }
 
     public static FluentProcessBuilder New() => new();

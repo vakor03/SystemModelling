@@ -25,30 +25,15 @@ public partial class Processor{
 
         public override Processor Build()
         {
-            Processor process = new Processor
+            Processor process = new Processor(SubprocessesCount)
             {
                 Name = Name,
                 TNext = Double.MaxValue,
                 DelayGenerator = DelayGenerator,
-                _patientsQueue = Queue,
-                _subprocesses = GenerateSubprocesses(SubprocessesCount)
+                PatientsQueue = Queue,
             };
 
             return process;
-        }
-
-        private Subprocess[] GenerateSubprocesses(int subprocessesCount)
-        {
-            var subprocesses = new Subprocess[subprocessesCount];
-            for (int i = 0; i < subprocessesCount; i++)
-            {
-                subprocesses[i] = new Subprocess
-                {
-                    TNext = Double.MaxValue
-                };
-            }
-
-            return subprocesses;
         }
     }
 }

@@ -3,27 +3,42 @@ using SystemModelling.Shared;
 
 namespace SystemModelling.ModelWIthItems;
 
-public class Labaratory : Processor
-{
-    public void Prf()
-    {
-        Console.WriteLine("Prf");
-    }
-}
-
 public class Model : IPrintResults
 {
     public double SimulationTime { get; set; }
     public double TCurrent { get; private set; }
-    
+
     private HashSet<Element> _elements = new();
-    private ILogger _logger = new FileLogger("log.txt");
-    
+    public ILogger Logger { get; set; }
+    private ILogger _infoLogger;
+
+    public bool PrintInfo
+    {
+        set
+        {
+            if (value)
+            {
+                _infoLogger = Logger;
+            }
+            else
+            {
+                _infoLogger = new NullLogger();
+            }
+        }
+    }
+
+    public Model()
+    {
+        Logger = new FileLogger("log.txt");
+        PrintInfo = false;
+    }
+
+
     public void AddElements(params Element[] elements)
     {
         _elements.UnionWith(elements);
     }
-    
+
     public void Simulate()
     {
         while (TCurrent < SimulationTime)
@@ -31,22 +46,23 @@ public class Model : IPrintResults
             TCurrent = FindNewTCurrent();
 
             UpdateElementsTCurrent();
-            
+
             PerformOutAct();
+
 
             PrintElementsInfo();
         }
-        
+
         PrintFinalResults();
     }
 
     private void PrintFinalResults()
     {
-        PrintResults(_logger);
+        PrintResults(Logger);
 
         foreach (var element in _elements)
         {
-            element.PrintResults(_logger);
+            element.PrintResults(Logger);
         }
     }
 
@@ -59,23 +75,23 @@ public class Model : IPrintResults
     {
         foreach (var element in _elements)
         {
-            element.PrintInfo(_logger);
+            element.PrintInfo(_infoLogger);
         }
     }
 
     private double FindNewTCurrent()
     {
         return _elements.Min(e => e.TNext);
-    }   
-    
+    }
+
     private void PerformOutAct()
     {
-        _logger.WriteLine("");
+        _infoLogger.WriteLine("");
         var elements = _elements.Where(e => e.TNext == TCurrent);
         foreach (var element in elements)
         {
             element.OutAct();
-            _logger.WriteLine($"{element.Name} OUT at {TCurrent}");
+            _infoLogger.WriteLine($"{element.Name} OUT at {TCurrent}");
         }
     }
 
