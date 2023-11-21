@@ -98,4 +98,9 @@ public class Element
     }
     
     public static FluentElementBuilder New() => new();
+
+    public virtual void Reset()
+    {
+        TNext = double.MaxValue;
+    }
 }
