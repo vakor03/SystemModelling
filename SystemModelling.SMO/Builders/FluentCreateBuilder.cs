@@ -19,9 +19,7 @@ public class FluentCreateBuilder : FluentElementBuilder<FluentCreateBuilder>
         Create create = new Create
         {
             Name = Name,
-            DelayMean = DelayMean,
-            DelayDeviation = DelayDeviation,
-            Distribution = Distribution,
+            DelayGenerator = DelayGenerator,
             Id = Element.NextId++,
             TNext = StartedDelay
         };

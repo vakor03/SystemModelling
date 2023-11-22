@@ -1,7 +1,9 @@
-﻿using SystemModelling.SMO;
+﻿using SystemModelling.ModelWIthItems.DelayGenerators;
+using SystemModelling.SMO;
 using SystemModelling.SMO.Builders;
 using SystemModelling.SMO.Elements;
 using SystemModelling.SMO.Enums;
+using SystemModelling.SMO.RandomValuesProviders;
 using SystemModelling.SMO.Transitions;
 
 namespace SystemModelling.Lab4;
@@ -14,7 +16,7 @@ public static class ModelHelper
         const DistributionType distributionType = DistributionType.Exp;
         const float processElementMeanDelay = 1;
 
-        List<Element> elements = new List<Element>();
+        List<IElement> elements = new List<IElement>();
         var build = CreateCreator(distributionType, createElementMeanDelay);
         Create create = build;
         elements.Add(create);
@@ -41,7 +43,7 @@ public static class ModelHelper
         const float processElementMeanDelay = 1;
         const DistributionType distributionType = DistributionType.Exp;
 
-        List<Element> elements = new List<Element>();
+        List<IElement> elements = new List<IElement>();
 
         Create create = CreateCreator(distributionType, createElementMeanDelay);
 
@@ -59,7 +61,7 @@ public static class ModelHelper
                 elements.Add(process1);
                 elements.Add(process2);
 
-                var previousElement = elements[^k];
+                var previousElement = (Element)elements[^k];
                 previousElement.Transition = new ProbabilityTransition(new List<ProbabilityOption>()
                 {
                     new(0.5f, process1),
@@ -80,8 +82,9 @@ public static class ModelHelper
     {
         return _processBuilder
             // .WithName($"Process {i + 1}")
-            .WithDistribution(distributionType)
-            .WithDelayMean(processElementMeanDelay)
+            .WithDelayGenerator(new Exponential(processElementMeanDelay).ToGenerator())
+            // .WithDistribution(distributionType)
+            // .WithDelayMean(processElementMeanDelay)
             .Build();
     }
 
@@ -89,8 +92,7 @@ public static class ModelHelper
     {
         return _createBuilder
             // .WithName("Create")
-            .WithDistribution(distributionType)
-            .WithDelayMean(createElementMeanDelay)
+            .WithDelayGenerator(new Exponential(createElementMeanDelay).ToGenerator())
             .Build();
     }
 }

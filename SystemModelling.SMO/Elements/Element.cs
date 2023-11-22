@@ -1,24 +1,22 @@
-﻿using SystemModelling.Shared;
-using SystemModelling.SMO.Builders;
+﻿using SystemModelling.ModelWIthItems.DelayGenerators;
+using SystemModelling.Shared;
+using SystemModelling.SMO.DelayGenerators;
 using SystemModelling.SMO.Enums;
 using SystemModelling.SMO.Transitions;
 
 namespace SystemModelling.SMO.Elements;
 
-public class Element
+public abstract class Element : IElement
 {
     public string Name { get; set; }
     public int Quantity { get; set; }
     protected State CurrentState { get; set; }
     public ITransition? Transition { get; set; }
 
-    #region DelayGenerator
-
-    public double DelayMean { get; set; }
-    public double DelayDeviation { get; set; }
-    public DistributionType Distribution { get; set; }
-
-    #endregion
+    // public double DelayMean { get; set; }
+    // public double DelayDeviation { get; set; }
+    // public DistributionType Distribution { get; set; }
+    public IDelayGenerator DelayGenerator { get; set; }
 
     #region Id
 
@@ -43,18 +41,6 @@ public class Element
         Name = $"element {Id}";
     }
 
-    protected double GetDelay()
-    {
-        return Distribution switch
-        {
-            DistributionType.Exp => FunRand.Exp(DelayMean),
-            DistributionType.Constant => DelayMean,
-            DistributionType.Normal => FunRand.Norm(DelayMean, DelayDeviation),
-            DistributionType.Uniform => FunRand.Unif(DelayMean, DelayDeviation),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
-
     public virtual void PrintInfo(ILogger logger)
     {
         logger.WriteLine($"{Name} quantity={Quantity} tNext={TNext}");
@@ -69,17 +55,11 @@ public class Element
     {
         Quantity++;
     }
-    
-    public virtual void LogTransition(Element? transitionElement)
-    {
-        Logger.WriteLine($"{Name} -> {transitionElement?.Name ?? "null"}");
-    }
 
     protected void PerformTransitionToNext()
     {
         Element? transitionElement = Transition?.Next;
         
-        LogTransition(transitionElement);
         transitionElement?.InAct();
     }
 
@@ -91,13 +71,16 @@ public class Element
     {
     }
 
+    public virtual void PrintInfo()
+    {
+        // no-op
+    }
+
     protected enum State
     {
         Free = 0,
         Busy = 1,
     }
-    
-    public static FluentElementBuilder New() => new();
 
     public virtual void Reset()
     {

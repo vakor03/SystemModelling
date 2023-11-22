@@ -1,22 +1,19 @@
-﻿using SystemModelling.SMO.Elements;
+﻿using SystemModelling.SMO.DelayGenerators;
+using SystemModelling.SMO.Elements;
 using SystemModelling.SMO.Enums;
 
 namespace SystemModelling.SMO.Builders;
 
-public class FluentElementBuilder : FluentElementBuilder<FluentElementBuilder>
+public abstract class FluentElementBuilder : FluentElementBuilder<FluentElementBuilder>
 {
-    public static FluentElementBuilder New() => new();
+    // public static FluentElementBuilder New() => new();
 }
 
-public class FluentElementBuilder<T> where T : FluentElementBuilder<T>
+public abstract class FluentElementBuilder<T> where T : FluentElementBuilder<T>
 {
     protected string Name;
 
-    protected double DelayMean;
-
-    protected double DelayDeviation;
-
-    protected DistributionType Distribution;
+    protected IDelayGenerator DelayGenerator { get; set; }
 
     public T WithName(string name)
     {
@@ -24,34 +21,11 @@ public class FluentElementBuilder<T> where T : FluentElementBuilder<T>
         return (T)this;
     }
 
-    public T WithDelayMean(double delayMean)
+    public T WithDelayGenerator(IDelayGenerator delayGenerator)
     {
-        DelayMean = delayMean;
+        DelayGenerator = delayGenerator;
         return (T)this;
     }
 
-    public T WithDelayDeviation(double delayDeviation)
-    {
-        DelayDeviation = delayDeviation;
-        return (T)this;
-    }
-
-    public T WithDistribution(DistributionType distribution)
-    {
-        Distribution = distribution;
-        return (T)this;
-    }
-
-    public virtual Element Build()
-    {
-        Element element = new Element
-        {
-            Name = Name,
-            DelayMean = DelayMean,
-            DelayDeviation = DelayDeviation,
-            Distribution = Distribution,
-            Id = Element.NextId++
-        };
-        return element;
-    }
+    public abstract Element Build();
 }

@@ -7,7 +7,7 @@ public class Create : Element
     public override void OutAct()
     {
         base.OutAct();
-        TNext = TCurrent + GetDelay();
+        TNext = TCurrent + DelayGenerator.GetDelay();
         
         PerformTransitionToNext();
     }

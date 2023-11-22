@@ -35,9 +35,7 @@ public class FluentProcessBuilder : FluentElementBuilder<FluentProcessBuilder>
         Process process = new Process(Quantity)
         {
             Name = Name,
-            DelayMean = DelayMean,
-            DelayDeviation = DelayDeviation,
-            Distribution = Distribution,
+            DelayGenerator = DelayGenerator,
             TNext = Double.MaxValue,
             MaxQueue = MaxQueue,
             Id = Element.NextId++

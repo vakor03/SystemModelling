@@ -131,7 +131,7 @@ public class Process : Element
 
     private void SubprocessInAct(Subprocess subprocess)
     {
-        subprocess.TNext = TCurrent + GetDelay();
+        subprocess.TNext = TCurrent + DelayGenerator.GetDelay();
         subprocess.IsBusy = true;
         _busySubprocessesCount++;
 
