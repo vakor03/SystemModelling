@@ -2,11 +2,11 @@
 
 namespace SystemModelling.SMO.Transitions;
 
-public class ProbabilitySetTransition : ITransition
+public class ProbabilityTransition : ITransition
 {
     private List<ProbabilityOption> _options;
     
-    public ProbabilitySetTransition(List<ProbabilityOption> options)
+    public ProbabilityTransition(List<ProbabilityOption> options)
     {
         _options = options;
 
@@ -43,7 +43,7 @@ public class ProbabilitySetTransition : ITransition
             sum += option.Probability;
             if (randomValue <= sum)
             {
-                return option.Transition.Next;
+                return option.Element;
             }
         }
 

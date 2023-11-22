@@ -89,10 +89,10 @@ public class Scenario_2_6 : Scenario
             .Build();
     
         create.Transition = (SingleTransition)process1;
-        process1.Transition = new ProbabilitySetTransition(new List<ProbabilityOption>()
+        process1.Transition = new ProbabilityTransition(new List<ProbabilityOption>()
         {
-            new() { Transition = (SingleTransition)process1, Probability = 0.4f },
-            new() { Transition = (SingleTransition)process2, Probability = 0.5f },
+            new() { Element = process1, Probability = 0.4f },
+            new() { Element = process2, Probability = 0.5f },
         });
 
         Model model = new Model(create, process1, process2);

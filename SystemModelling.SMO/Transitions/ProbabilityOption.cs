@@ -1,13 +1,5 @@
-﻿namespace SystemModelling.SMO.Transitions;
+﻿using SystemModelling.SMO.Elements;
 
-public record struct ProbabilityOption
-{
-    public float Probability { get; set; }
-    public ITransition Transition { get; set; }
+namespace SystemModelling.SMO.Transitions;
 
-    public ProbabilityOption(float probability, ITransition transition)
-    {
-        Probability = probability;
-        Transition = transition;
-    }
-}
+public record struct ProbabilityOption(float Probability, Element Element);

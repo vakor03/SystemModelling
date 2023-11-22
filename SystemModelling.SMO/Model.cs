@@ -93,9 +93,9 @@ public class Model
 
     private void DoStatistics()
     {
-        foreach (var element in _elements)
+        for (var i = 0; i < _elements.Count; i++)
         {
-            element.DoStatistics(_tNext - _tCurrent);
+            _elements[i].DoStatistics(_tNext - _tCurrent);
         }
     }
 

@@ -2,5 +2,16 @@
 
 using BenchmarkDotNet.Running;
 using SystemModelling.Lab4;
+using SystemModelling.SMO;
 
-BenchmarkRunner.Run<ModelBenchmark>();
+// BenchmarkRunner.Run<LinearModelBenchmark>();
+BenchmarkRunner.Run<BranchedModelBenchmark>();
+
+// Model model = ModelHelper.CreateBranchedModel(50);
+// model.DisableLogging = true;
+//
+// for(int i = 0; i < 100; i++)
+// {
+//     model.Reset();
+//     model.Simulate(100_000);
+// }

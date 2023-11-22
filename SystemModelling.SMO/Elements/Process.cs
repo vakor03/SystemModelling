@@ -118,10 +118,12 @@ public class Process : Element
         PrevTimeLeave = TCurrent;
     }
 
+    private int _busySubprocessesCount = 0;
     private void SubprocessOutAct(Subprocess subprocess)
     {
         subprocess.IsBusy = false;
         subprocess.TNext = Double.MaxValue;
+        _busySubprocessesCount--;
         
         
         PerformTransitionToNext();
@@ -131,6 +133,7 @@ public class Process : Element
     {
         subprocess.TNext = TCurrent + GetDelay();
         subprocess.IsBusy = true;
+        _busySubprocessesCount++;
 
         UpdateTNext();
     }
@@ -147,8 +150,9 @@ public class Process : Element
         {
             subprocess.DoStatistics(delta);
         }
-        
-        ClientTimeProcessing += (_subprocesses.Count(sp=>sp.IsBusy) + Queue) * delta;
+
+        // var count = _subprocesses.Count(sp=>sp.IsBusy);
+        ClientTimeProcessing += (_busySubprocessesCount + Queue) * delta;
     }
 
 

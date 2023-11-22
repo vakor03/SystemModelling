@@ -1,4 +1,5 @@
 ﻿using SystemModelling.SMO;
+using SystemModelling.SMO.Builders;
 using SystemModelling.SMO.Elements;
 using SystemModelling.SMO.Enums;
 using SystemModelling.SMO.Transitions;
@@ -46,25 +47,38 @@ public static class ModelHelper
 
         elements.Add(create);
 
+        int k = 3;
         for (int i = 0; i < layersCount; i++)
         {
             int elementsInLayer = (int)Math.Pow(2, i);
-            for (int j = 0; j < elementsInLayer; j++)
+            for (int j = 1; j <= elementsInLayer; j++)
             {
-                Process process = CreateProcessor(distributionType, processElementMeanDelay);
+                Process process1 = CreateProcessor(distributionType, processElementMeanDelay);
+                Process process2 = CreateProcessor(distributionType, processElementMeanDelay);
+                
+                elements.Add(process1);
+                elements.Add(process2);
 
-                var previousElement = elements[^(j + 1 + j / 2)];
-                previousElement.Transition = new SingleTransition(process);
+                var previousElement = elements[^k];
+                previousElement.Transition = new ProbabilityTransition(new List<ProbabilityOption>()
+                {
+                    new(0.5f, process1),
+                    new(0.5f, process2),
+                });
+                
+                k++;
             }
         }
-
+        
         Model model = new Model(elements);
         return model;
     }
+    private static FluentProcessBuilder _processBuilder = FluentProcessBuilder.New();
+    private static FluentCreateBuilder _createBuilder = FluentCreateBuilder.New();
 
     private static Process CreateProcessor(DistributionType distributionType, float processElementMeanDelay)
     {
-        return Process.New()
+        return _processBuilder
             // .WithName($"Process {i + 1}")
             .WithDistribution(distributionType)
             .WithDelayMean(processElementMeanDelay)
@@ -73,7 +87,7 @@ public static class ModelHelper
 
     private static Create CreateCreator(DistributionType distributionType, float createElementMeanDelay)
     {
-        return Create.New()
+        return _createBuilder
             // .WithName("Create")
             .WithDistribution(distributionType)
             .WithDelayMean(createElementMeanDelay)
