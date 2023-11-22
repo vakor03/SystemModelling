@@ -4,7 +4,7 @@ public class Subprocess
 {
     public bool IsBusy { get; set; }
     public double TNext { get; set; }
-    public string Name { get; set; }
+    // public string Name { get; set; }
 
     public double MeanLoad { get; private set; }
 

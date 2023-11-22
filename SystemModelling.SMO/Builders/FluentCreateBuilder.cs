@@ -20,7 +20,7 @@ public class FluentCreateBuilder : FluentElementBuilder<FluentCreateBuilder>
         {
             Name = Name,
             DelayGenerator = DelayGenerator,
-            Id = Element.NextId++,
+            Id = NextId++,
             TNext = StartedDelay
         };
         

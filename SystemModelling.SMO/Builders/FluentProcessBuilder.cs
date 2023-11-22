@@ -38,8 +38,10 @@ public class FluentProcessBuilder : FluentElementBuilder<FluentProcessBuilder>
             DelayGenerator = DelayGenerator,
             TNext = Double.MaxValue,
             MaxQueue = MaxQueue,
-            Id = Element.NextId++
+            Id = NextId++
         };
+        
+        process.AddStatistics(new StandardProcessStatistics());
 
         for (int i = 0; i < StartedCount; i++)
         {

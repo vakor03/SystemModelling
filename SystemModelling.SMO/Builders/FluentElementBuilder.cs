@@ -11,6 +11,7 @@ public abstract class FluentElementBuilder : FluentElementBuilder<FluentElementB
 
 public abstract class FluentElementBuilder<T> where T : FluentElementBuilder<T>
 {
+    protected static int NextId = 1;
     protected string Name;
 
     protected IDelayGenerator DelayGenerator { get; set; }
