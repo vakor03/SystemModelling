@@ -1,8 +1,8 @@
-﻿using SystemModelling.Generators.Generators;
-using SystemModelling.Generators.Intervals;
-using SystemModelling.Shared;
+﻿using SystemModelling.Lab1.Generators;
+using SystemModelling.Lab1.Intervals;
+using SystemModelling.SMO.Loggers;
 
-namespace SystemModelling.Generators
+namespace SystemModelling.Lab1
 {
     public class GeneratorAnalytics
     {

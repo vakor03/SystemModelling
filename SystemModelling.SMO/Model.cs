@@ -1,4 +1,5 @@
-﻿using SystemModelling.Shared;
+﻿using SystemModelling.SMO.Elements;
+using SystemModelling.SMO.Loggers;
 
 namespace SystemModelling.SMO;
 
@@ -27,8 +28,8 @@ public class Model
     {
         while (_tCurrent < time)
         {
-            // if (!DisableLogging)
-            //     Logger.WriteLine("");
+            if (!DisableLogging)
+                Logger.WriteLine("");
 
             _tNext = FindSmallestTNext();
 
@@ -38,12 +39,12 @@ public class Model
             
             OutActRequiredElements();
 
-            // if (!DisableLogging)
-            //     PrintElementsInfo();
+            if (!DisableLogging)
+                PrintElementsInfo();
         }
 
-        // if (!DisableLogging)
-        //     PrintResults();
+        if (!DisableLogging)
+            PrintResults();
         OnResultsPrinted?.Invoke(Logger);
     }
 
@@ -135,24 +136,26 @@ public class Model
     // }
     //
     //
-    // public void PrintElementsInfo()
-    // {
-    //     foreach (var element in _elements)
-    //     {
-    //         element.PrintInfo(Logger);
-    //     }
-    // }
+    public void PrintElementsInfo()
+    {
+        Logger.WriteLine("\n-------------INFO-------------");
+        Logger.WriteLine($"tCurrent = {_tCurrent}");
+        foreach (var element in _elements)
+        {
+            element.PrintInfo(Logger);
+        }
+    }
     //
-    // public void PrintResults()
-    // {
-    //     Logger.WriteLine("\n-------------RESULTS-------------");
-    //     foreach (Element element in _elements)
-    //     {
-    //         element.PrintResult(Logger);
-    //     }
-    //
-    //     Logger.WriteLine($"Mean clients in system: {CalculateMeanClientsInSystem()}");
-    //     Logger.WriteLine($"Mean time in system: {CalculateMeanTimeInSystem()}");
-    // }
+    public void PrintResults()
+    {
+        Logger.WriteLine("\n-------------RESULTS-------------");
+        foreach (IElement element in _elements)
+        {
+            element.PrintResult(Logger);
+        }
+    
+        // Logger.WriteLine($"Mean clients in system: {CalculateMeanClientsInSystem()}");
+        // Logger.WriteLine($"Mean time in system: {CalculateMeanTimeInSystem()}");
+    }
     //
 }

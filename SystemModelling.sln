@@ -1,16 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemModelling.Generators", "SystemModelling.Generators\SystemModelling.Generators.csproj", "{552A7220-41AA-4D18-BA1C-96BEE23F882D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemModelling.Lab1", "SystemModelling.Lab1\SystemModelling.Lab1.csproj", "{552A7220-41AA-4D18-BA1C-96BEE23F882D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemModelling.SMO", "SystemModelling.SMO\SystemModelling.SMO.csproj", "{C3173507-8935-4B6F-8233-CE25C7F93059}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemModelling.Shared", "SystemModelling.Shared\SystemModelling.Shared.csproj", "{8F887758-01F3-45E0-B468-47F4DC4CD396}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemModelling.ModelWIthItems", "SystemModelling.ModelWIthItems\SystemModelling.ModelWIthItems.csproj", "{4E062BC2-F2CA-456A-A9F0-0B40C804F776}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemModelling.Lab4", "SystemModelling.Lab4\SystemModelling.Lab4.csproj", "{AEE38174-E74F-43AC-A2E6-0C31FEB6BAD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemModelling.Lab2", "SystemModelling.Lab2\SystemModelling.Lab2.csproj", "{26CC6DC2-5AB9-45F9-9007-968936E94473}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemModelling.Lab3", "SystemModelling.Lab3\SystemModelling.Lab3.csproj", "{558E8A07-EA25-4E8E-9685-4D9E592C9E24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,10 +26,6 @@ Global
 		{C3173507-8935-4B6F-8233-CE25C7F93059}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3173507-8935-4B6F-8233-CE25C7F93059}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3173507-8935-4B6F-8233-CE25C7F93059}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8F887758-01F3-45E0-B468-47F4DC4CD396}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F887758-01F3-45E0-B468-47F4DC4CD396}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F887758-01F3-45E0-B468-47F4DC4CD396}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F887758-01F3-45E0-B468-47F4DC4CD396}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4E062BC2-F2CA-456A-A9F0-0B40C804F776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4E062BC2-F2CA-456A-A9F0-0B40C804F776}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E062BC2-F2CA-456A-A9F0-0B40C804F776}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -42,5 +38,9 @@ Global
 		{26CC6DC2-5AB9-45F9-9007-968936E94473}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26CC6DC2-5AB9-45F9-9007-968936E94473}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26CC6DC2-5AB9-45F9-9007-968936E94473}.Release|Any CPU.Build.0 = Release|Any CPU
+		{558E8A07-EA25-4E8E-9685-4D9E592C9E24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{558E8A07-EA25-4E8E-9685-4D9E592C9E24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{558E8A07-EA25-4E8E-9685-4D9E592C9E24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{558E8A07-EA25-4E8E-9685-4D9E592C9E24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

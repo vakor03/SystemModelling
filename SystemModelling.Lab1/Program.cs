@@ -1,8 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using SystemModelling.Generators;
-using SystemModelling.Generators.Generators;
-using SystemModelling.Shared;
+using SystemModelling.Lab1;
+using SystemModelling.Lab1.Generators;
+using SystemModelling.SMO.Loggers;
 
 int numberOfElements = 10_000;
 // {

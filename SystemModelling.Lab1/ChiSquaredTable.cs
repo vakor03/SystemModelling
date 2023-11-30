@@ -1,4 +1,4 @@
-﻿namespace SystemModelling.Generators;
+﻿namespace SystemModelling.Lab1;
 
 public static class ChiSquaredTable
 {

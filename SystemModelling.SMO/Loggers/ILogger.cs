@@ -1,4 +1,4 @@
-﻿namespace SystemModelling.Shared;
+﻿namespace SystemModelling.SMO.Loggers;
 
 public interface ILogger
 {

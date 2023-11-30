@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using SystemModelling.Shared;
+using SystemModelling.SMO.Loggers;
 
 namespace SystemModelling.SMO.Elements;
 
@@ -30,14 +30,15 @@ public class StandardProcessStatistics : IProcessStatistics
     public void PrintResult(ILogger logger)
     {
         _sb.Clear();
-        _sb.AppendLine($"Mean queue: {_meanQueue / _process.TCurrent}");
+        _sb.AppendLine($"\tItems processed: {_process.Quantity}");
+        _sb.AppendLine($"\tMean queue: {_meanQueue / _process.TCurrent}");
         
         int i = 0;
         foreach (var subprocess in _process.Subprocesses)
         {
-            _sb.AppendLine($"\tSubprocess {i++} mean load: {subprocess.MeanLoad / _process.TCurrent}");
+            _sb.AppendLine($"\t\tSubprocess {i++} mean load: {subprocess.MeanLoad / _process.TCurrent}");
         }
-        _sb.AppendLine($"Failure probability: {(double)_process.Failure / _process.Quantity}");
+        _sb.AppendLine($"\tFailure probability: {(double)_process.Failure / (_process.Quantity+_process.Failure)}");
 
         
         logger.WriteLine(_sb.ToString());

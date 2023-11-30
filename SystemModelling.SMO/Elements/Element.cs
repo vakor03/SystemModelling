@@ -1,5 +1,5 @@
-﻿using SystemModelling.Shared;
-using SystemModelling.SMO.DelayGenerators;
+﻿using SystemModelling.SMO.DelayGenerators;
+using SystemModelling.SMO.Loggers;
 using SystemModelling.SMO.Transitions;
 
 namespace SystemModelling.SMO.Elements;
@@ -20,10 +20,7 @@ public abstract class Element : IElement
         logger.WriteLine($"{Name} quantity={Quantity} tNext={TNext}");
     }
 
-    public virtual void PrintResult(ILogger logger)
-    {
-        logger.WriteLine($"{Name} quantity={Quantity}");
-    }
+    public abstract void PrintResult(ILogger logger);
 
     public virtual void OutAct()
     {

@@ -1,7 +1,6 @@
 ﻿#region
 
-using SystemModelling.Shared;
-using SystemModelling.SMO.Builders;
+using SystemModelling.SMO.Loggers;
 
 #endregion
 
@@ -13,7 +12,7 @@ public class Process : Element, IProcess
     public IEnumerable<Subprocess> Subprocesses => _subprocesses;
     private HashSet<IProcessStatistics> _statistics = new();
 
-    public Process(int subprocessesCount)
+    public Process(int subprocessesCount = 1)
     {
         _subprocesses = CreateSubprocesses(subprocessesCount);
     }
@@ -79,8 +78,7 @@ public class Process : Element, IProcess
         subprocess.IsBusy = false;
         subprocess.TNext = Double.MaxValue;
         BusySubprocessesCount--;
-
-
+        
         PerformTransitionToNext();
     }
 
@@ -114,13 +112,13 @@ public class Process : Element, IProcess
 
     public override void PrintInfo(ILogger logger)
     {
-        logger.WriteLine($"{Name} loaded={_subprocesses.Count(sp => sp.IsBusy)}/{_subprocesses.Length}" +
-                         $" queue={Queue} failured={Failure} quantity={Quantity} tNext={TNext}");
+        logger.WriteLine(
+            $"{Name} loaded={_subprocesses.Count(sp => sp.IsBusy)}/{_subprocesses.Length} queue={Queue} failured={Failure} quantity={Quantity} tNext={TNext}");
     }
 
     public override void PrintResult(ILogger logger)
     {
-        base.PrintResult(logger);
+        logger.WriteLine($"{Name}");
         foreach (var processStatistics in _statistics)
         {
             processStatistics.PrintResult(logger);
@@ -134,7 +132,6 @@ public class Process : Element, IProcess
         {
             subprocesses[i] = new Subprocess
             {
-                // Name = $"subprocess {i}",
                 TNext = Double.MaxValue,
                 IsBusy = false
             };
@@ -142,6 +139,4 @@ public class Process : Element, IProcess
 
         return subprocesses;
     }
-
-    public new static FluentProcessBuilder New() => new();
 }

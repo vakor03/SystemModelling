@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SystemModelling.Shared\SystemModelling.Shared.csproj" />
+      <ProjectReference Include="..\SystemModelling.SMO\SystemModelling.SMO.csproj" />
     </ItemGroup>
 
 </Project>

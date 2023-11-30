@@ -1,4 +1,4 @@
-﻿namespace SystemModelling.Generators.Generators;
+﻿namespace SystemModelling.Lab1.Generators;
 
 public class Generator1 : Generator
 {

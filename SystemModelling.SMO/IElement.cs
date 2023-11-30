@@ -1,4 +1,6 @@
-﻿namespace SystemModelling.SMO;
+﻿using SystemModelling.SMO.Loggers;
+
+namespace SystemModelling.SMO;
 
 public interface IElement
 {
@@ -6,6 +8,7 @@ public interface IElement
     double TCurrent { get; set; }
     void OutAct();
     void DoStatistics(double deltaTime);
-    void PrintInfo();
+    void PrintInfo(ILogger logger);
+    void PrintResult(ILogger logger);
     void Reset();
 }

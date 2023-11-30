@@ -1,6 +1,6 @@
 ﻿using MathNet.Numerics;
 
-namespace SystemModelling.Generators.Generators;
+namespace SystemModelling.Lab1.Generators;
 
 public class Generator2 : Generator
 {

@@ -1,4 +1,4 @@
-﻿namespace SystemModelling.ModelWIthItems.DelayGenerators;
+﻿namespace SystemModelling.SMO.RandomValuesProviders;
 
 public class Uniform : IRandomValueProvider
 {

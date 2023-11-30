@@ -1,4 +1,4 @@
-﻿using SystemModelling.ModelWIthItems.DelayGenerators;
+﻿using SystemModelling.SMO.RandomValuesProviders;
 
 namespace SystemModelling.SMO.DelayGenerators;
 

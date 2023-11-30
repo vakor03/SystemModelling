@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using SystemModelling.Shared;
+using SystemModelling.SMO.Loggers;
 
 namespace SystemModelling.SMO.Elements;
 
