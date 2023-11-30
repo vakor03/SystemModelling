@@ -1,7 +1,5 @@
 ﻿using SystemModelling.SMO;
-using SystemModelling.SMO.Builders;
 using SystemModelling.SMO.Elements;
-using SystemModelling.SMO.Enums;
 using SystemModelling.SMO.RandomValuesProviders;
 using SystemModelling.SMO.Transitions;
 
@@ -12,18 +10,17 @@ public static class ModelHelper
     public static Model CreateLinearModel(int processesCount)
     {
         const float createElementMeanDelay = 1;
-        const DistributionType distributionType = DistributionType.Exp;
         const float processElementMeanDelay = 1;
 
         List<IElement> elements = new List<IElement>();
-        var build = CreateCreator(distributionType, createElementMeanDelay);
+        var build = CreateCreator(createElementMeanDelay);
         Create create = build;
         elements.Add(create);
 
         Element previousElement = create;
         for (int i = 0; i < processesCount; i++)
         {
-            Process process = CreateProcessor(distributionType, processElementMeanDelay);
+            Process process = CreateProcessor(processElementMeanDelay);
 
             previousElement.Transition = new SingleTransition(process);
             elements.Add(process);
@@ -40,11 +37,10 @@ public static class ModelHelper
     {
         const float createElementMeanDelay = 1;
         const float processElementMeanDelay = 1;
-        const DistributionType distributionType = DistributionType.Exp;
 
         List<IElement> elements = new List<IElement>();
 
-        Create create = CreateCreator(distributionType, createElementMeanDelay);
+        Create create = CreateCreator(createElementMeanDelay);
 
         elements.Add(create);
 
@@ -54,8 +50,8 @@ public static class ModelHelper
             int elementsInLayer = (int)Math.Pow(2, i);
             for (int j = 1; j <= elementsInLayer; j++)
             {
-                Process process1 = CreateProcessor(distributionType, processElementMeanDelay);
-                Process process2 = CreateProcessor(distributionType, processElementMeanDelay);
+                Process process1 = CreateProcessor(processElementMeanDelay);
+                Process process2 = CreateProcessor(processElementMeanDelay);
                 
                 elements.Add(process1);
                 elements.Add(process2);
@@ -74,24 +70,19 @@ public static class ModelHelper
         Model model = new Model(elements);
         return model;
     }
-    private static FluentProcessBuilder _processBuilder = FluentProcessBuilder.New();
-    private static FluentCreateBuilder _createBuilder = FluentCreateBuilder.New();
-
-    private static Process CreateProcessor(DistributionType distributionType, float processElementMeanDelay)
+    private static Process CreateProcessor(float processElementMeanDelay)
     {
-        return _processBuilder
-            // .WithName($"Process {i + 1}")
-            .WithDelayGenerator(new Exponential(processElementMeanDelay).ToGenerator())
-            // .WithDistribution(distributionType)
-            // .WithDelayMean(processElementMeanDelay)
-            .Build();
+        return new Process()
+        {
+            DelayGenerator = new Exponential(processElementMeanDelay).ToGenerator(),
+        };
     }
 
-    private static Create CreateCreator(DistributionType distributionType, float createElementMeanDelay)
+    private static Create CreateCreator(float createElementMeanDelay)
     {
-        return _createBuilder
-            // .WithName("Create")
-            .WithDelayGenerator(new Exponential(createElementMeanDelay).ToGenerator())
-            .Build();
+        return new Create()
+        {
+            DelayGenerator = new Exponential(createElementMeanDelay).ToGenerator()
+        };
     }
 }

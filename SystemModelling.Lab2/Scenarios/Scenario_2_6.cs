@@ -1,6 +1,5 @@
 ﻿using SystemModelling.SMO;
 using SystemModelling.SMO.Elements;
-using SystemModelling.SMO.Enums;
 using SystemModelling.SMO.Loggers;
 using SystemModelling.SMO.RandomValuesProviders;
 using SystemModelling.SMO.Transitions;
