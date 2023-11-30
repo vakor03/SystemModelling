@@ -9,12 +9,13 @@ public interface IProcessStatistics
     void PrintResult(ILogger logger);
 }
 
-public interface IProcess : IElement
+public interface IModelStatistics
 {
-    int Queue { get; }
-    IEnumerable<Subprocess> Subprocesses { get; }
-    int BusySubprocessesCount { get; }
-    int Quantity { get; }
-    int Failure { get; }
-    public event Action OnOutAct;
+    void Init(IModel model);
+    void DoStatistics(double delta);
+    void PrintResult(ILogger logger);
+}
+
+public interface IModel
+{
 }

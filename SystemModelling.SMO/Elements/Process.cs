@@ -21,9 +21,11 @@ public class Process : Element, IProcess
 
     public int MaxQueue { get; set; }
 
+    public int Quantity { get; }
     public int Failure { get; private set; } = 0;
 
     public event Action OnOutAct;
+    public event Action OnQueueChange;
 
     public override void InAct()
     {
@@ -41,6 +43,7 @@ public class Process : Element, IProcess
         if (Queue < MaxQueue)
         {
             Queue++;
+            OnQueueChange?.Invoke();
         }
         else
         {
@@ -61,8 +64,9 @@ public class Process : Element, IProcess
 
                 if (Queue > 0)
                 {
-                    Queue--;
                     SubprocessInAct(subprocess);
+                    Queue--;
+                    OnQueueChange?.Invoke();
                 }
             }
         }
@@ -78,7 +82,7 @@ public class Process : Element, IProcess
         subprocess.IsBusy = false;
         subprocess.TNext = Double.MaxValue;
         BusySubprocessesCount--;
-        
+
         PerformTransitionToNext();
     }
 
@@ -113,7 +117,7 @@ public class Process : Element, IProcess
     public override void PrintInfo(ILogger logger)
     {
         logger.WriteLine(
-            $"{Name} loaded={_subprocesses.Count(sp => sp.IsBusy)}/{_subprocesses.Length} queue={Queue} failured={Failure} quantity={Quantity} tNext={TNext}");
+            $"{Name} loaded={_subprocesses.Count(sp => sp.IsBusy)}/{_subprocesses.Length} queue={Queue} failured={Failure} quantity={OutQuantity} tNext={TNext}");
     }
 
     public override void PrintResult(ILogger logger)

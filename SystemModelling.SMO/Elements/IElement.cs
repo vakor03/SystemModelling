@@ -11,4 +11,6 @@ public interface IElement
     void PrintInfo(ILogger logger);
     void PrintResult(ILogger logger);
     void Reset();
+    int InQuantity { get; set; }
+    int OutQuantity { get; set; }
 }

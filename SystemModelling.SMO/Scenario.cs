@@ -1,4 +1,4 @@
-﻿namespace SystemModelling.Lab2.Scenarios;
+﻿namespace SystemModelling.SMO;
 
 public abstract class Scenario
 {

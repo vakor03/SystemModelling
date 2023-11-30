@@ -9,7 +9,8 @@ public abstract class Element : IElement
     public string Name { get; set; }
     public int Id { get; init; }
     
-    public int Quantity { get; set; }
+    public int OutQuantity { get; set; }
+    public int InQuantity { get; set; }
     public ITransition? Transition { get; set; }
     public IDelayGenerator DelayGenerator { get; set; }
     public double TCurrent { get; set; }
@@ -17,14 +18,14 @@ public abstract class Element : IElement
 
     public virtual void PrintInfo(ILogger logger)
     {
-        logger.WriteLine($"{Name} quantity={Quantity} tNext={TNext}");
+        logger.WriteLine($"{Name} quantity={OutQuantity} tNext={TNext}");
     }
 
     public abstract void PrintResult(ILogger logger);
 
     public virtual void OutAct()
     {
-        Quantity++;
+        OutQuantity++;
     }
 
     protected void PerformTransitionToNext()
@@ -36,6 +37,7 @@ public abstract class Element : IElement
 
     public virtual void InAct()
     {
+        InQuantity++;
     }
 
     public virtual void DoStatistics(double delta)

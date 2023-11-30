@@ -8,7 +8,7 @@ namespace SystemModelling.Lab2.Scenarios;
 
 public class Scenario_2_1 : Scenario
 {
-    public override void Run(double time = 1000.0)
+    public override void Run(double time)
     {
         Create create = new Create()
         {

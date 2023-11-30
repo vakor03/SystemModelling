@@ -3,7 +3,7 @@ using SystemModelling.SMO.Loggers;
 
 namespace SystemModelling.SMO;
 
-public class Model
+public class Model : IModel
 {
     private List<IElement> _elements;
     public ILogger Logger { get; set; } = new NullLogger();
@@ -14,6 +14,7 @@ public class Model
 
     public event Action<ILogger>? OnResultsPrinted;
     public bool DisableLogging { get; set; } = false;
+    public IModelStatistics? Statistics { get; set; }
 
     public Model(List<IElement> elements)
     {
@@ -149,6 +150,7 @@ public class Model
     public void PrintResults()
     {
         Logger.WriteLine("\n-------------RESULTS-------------");
+        Statistics?.PrintResult(Logger);
         foreach (IElement element in _elements)
         {
             element.PrintResult(Logger);

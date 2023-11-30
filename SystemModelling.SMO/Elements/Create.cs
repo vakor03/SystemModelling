@@ -14,7 +14,7 @@ public class Create : Element
 
     public override void PrintResult(ILogger logger)
     {
-        logger.WriteLine($"Create {Name}\n\tItems created: {Quantity}");
+        logger.WriteLine($"Create {Name}\n\tItems created: {OutQuantity}");
     }
 
     public override void Reset()
