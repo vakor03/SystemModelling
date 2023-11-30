@@ -113,6 +113,7 @@ public class Model : IModel
     //
     private void DoStatistics()
     {
+        Statistics?.DoStatistics(_tNext - _tCurrent);
         for (var i = 0; i < _elements.Count; i++)
         {
             _elements[i].DoStatistics(_tNext - _tCurrent);

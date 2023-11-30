@@ -6,7 +6,7 @@ public class Create : Element
 {
     public override void OutAct()
     {
-        base.OutAct();
+        OutQuantity++;
         TNext = TCurrent + DelayGenerator.GetDelay();
         
         PerformTransitionToNext();
@@ -14,7 +14,7 @@ public class Create : Element
 
     public override void PrintResult(ILogger logger)
     {
-        logger.WriteLine($"Create {Name}\n\tItems created: {OutQuantity}");
+        logger.WriteLine($"\n{Name}\n\tItems created: {OutQuantity}");
     }
 
     public override void Reset()

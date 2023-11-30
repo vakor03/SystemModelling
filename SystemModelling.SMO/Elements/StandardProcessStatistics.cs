@@ -51,7 +51,7 @@ public class StandardProcessStatistics : IProcessStatistics
             _sb.AppendLine($"\tMean load: {(_process.Subprocesses.First().MeanLoad / _process.TCurrent)}");
         }
 
-        _sb.AppendLine(
+        _sb.Append(
             $"\tFailure probability: {(double)_process.Failure / (_process.OutQuantity + _process.Failure)}");
 
 

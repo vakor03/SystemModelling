@@ -2,40 +2,12 @@
 using SystemModelling.SMO.Elements;
 using SystemModelling.SMO.Loggers;
 using SystemModelling.SMO.RandomValuesProviders;
+using SystemModelling.SMO.Transitions;
 
 namespace SystemModelling.Lab3.Scenarios;
 
 public class Scenario_BankModel : Scenario
 {
-    public int QueueChangeCount { get; protected set; }
-
-    protected void TryChangeQueue(ILogger logger, Process process1, Process process2)
-    {
-        if (Math.Abs(process1.Queue - process2.Queue) < 2)
-        {
-            return;
-        }
-
-        int process1Queue = process1.Queue;
-        int process2Queue = process2.Queue;
-
-        if (process1.Queue < process2.Queue)
-        {
-            process1.Queue++;
-            process2.Queue--;
-        }
-        else
-        {
-            process1.Queue--;
-            process2.Queue++;
-        }
-
-        QueueChangeCount++;
-
-        logger.WriteLine(
-            $"Queue changed: {process1.Name} {process1Queue} -> {process1.Queue}, {process2.Name} {process2Queue} -> {process2.Queue}");
-    }
-
     public override void Run(double time)
     {
         Create create = new Create()
@@ -57,10 +29,19 @@ public class Scenario_BankModel : Scenario
             DelayGenerator = new Normal(1.0, 0.3).ToGenerator(),
             MaxQueue = 3,
         };
-        process1.AddStatistics(new StandardProcessStatistics());
-        process2.AddStatistics(new StandardProcessStatistics());
+        Dispose dispose = new Dispose();
+
+        var process1Statistics = new StandardProcessStatistics();
+        process1.AddStatistics(process1Statistics);
+        process1.AddStatistics(new TotalTimeLeavedStatistics());
+
+        var process2Statistics = new StandardProcessStatistics();
+        process2.AddStatistics(process2Statistics);
+        process2.AddStatistics(new TotalTimeLeavedStatistics());
 
         create.Transition = new CustomTransition(process1, process2);
+        process1.Transition = new SingleTransition(dispose);
+        process2.Transition = new SingleTransition(dispose);
 
         // прибуття першого клієнта заплановано на момент часу 0,1 од. часу
         create.TNext = 0.1;
@@ -69,13 +50,19 @@ public class Scenario_BankModel : Scenario
         AddItemsToProcess(process1, 3);
         AddItemsToProcess(process2, 3);
 
-        Model model = new Model(create, process1, process2)
+        Model model = new Model(create, process1, process2, dispose)
         {
             Logger = new FileLogger("lab3_2.txt")
         };
 
-        process1.OnQueueChange += () => TryChangeQueue(model.Logger, process1, process2);
-        process2.OnQueueChange += () => TryChangeQueue(model.Logger, process1, process2);
+        // логіка зміни черги
+        BankChangeQueueBehaviour bankChangeQueueBehaviour = new BankChangeQueueBehaviour();
+        
+        process1.OnQueueChange += () => bankChangeQueueBehaviour.TryChangeQueue(model.Logger, process1, process2);
+        process2.OnQueueChange += () => bankChangeQueueBehaviour.TryChangeQueue(model.Logger, process1, process2);
+
+        model.Statistics = new BankModelStatistics(create, dispose, process1Statistics, process2Statistics,
+            bankChangeQueueBehaviour);
 
         model.Simulate(time);
     }
@@ -86,42 +73,5 @@ public class Scenario_BankModel : Scenario
         {
             process.InAct();
         }
-    }
-}
-
-internal class CustomModelStatistics : IModelStatistics
-{
-    private double _meanClientsInBank;
-    private double _meanTimeClientInBank;
-    private double _clientsFailProbability;
-
-    private Create _create;
-    private Dispose _dispose;
-    private readonly StandardProcessStatistics _process1;
-    private readonly StandardProcessStatistics _process2;
-
-    public CustomModelStatistics(Create create, Dispose dispose, StandardProcessStatistics process1, StandardProcessStatistics process2)
-    {
-        _create = create;
-        _dispose = dispose;
-        _process1 = process1;
-        _process2 = process2;
-    }
-
-    public void Init(IModel model)
-    {
-    }
-
-    public void DoStatistics(double delta)
-    {
-        _meanClientsInBank += delta * (_create.OutQuantity - _dispose.InQuantity - _process1.Failure - _process2.Failure);
-    }
-
-    public void PrintResult(ILogger logger)
-    {
-        double totalTime = _dispose.TCurrent;
-        _meanClientsInBank /= totalTime;
-        _clientsFailProbability = (double)(_process1.Failure + _process2.Failure) / _create.OutQuantity;
-        _meanTimeClientInBank = (_process1.MeanLoad + _process1.MeanQueue + _process2.MeanLoad + _process2.MeanQueue) * totalTime / _create.OutQuantity;
     }
 }

@@ -122,7 +122,7 @@ public class Process : Element, IProcess
 
     public override void PrintResult(ILogger logger)
     {
-        logger.WriteLine($"{Name}");
+        logger.WriteLine($"\n{Name}");
         foreach (var processStatistics in _statistics)
         {
             processStatistics.PrintResult(logger);

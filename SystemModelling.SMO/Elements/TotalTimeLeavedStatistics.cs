@@ -33,7 +33,7 @@ public class TotalTimeLeavedStatistics : IProcessStatistics
     public void PrintResult(ILogger logger)
     {
         _sb.Clear();
-        _sb.AppendLine($"Mean time between leaving: {TotalTimeLeave / _process.OutQuantity}");
+        _sb.Append($"\tMean time between leaving: {TotalTimeLeave / _process.OutQuantity}");
         logger.WriteLine(_sb.ToString());
     }
 }
