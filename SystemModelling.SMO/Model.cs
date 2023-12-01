@@ -1,38 +1,27 @@
-﻿using SystemModelling.Shared;
-using SystemModelling.SMO.Elements;
+﻿using SystemModelling.SMO.Elements;
+using SystemModelling.SMO.Loggers;
 
 namespace SystemModelling.SMO;
 
-public class Model
+public class Model : IModel
 {
-    private Element _currentElement;
-    private List<Element> _elements;
-    // private ILogger _logger { get; set; } = new NullLogger()
-
+    private List<IElement> _elements;
     public ILogger Logger { get; set; } = new NullLogger();
 
-    private double _tCurrent;
-    private double _tNext;
+    private double _tCurrent = 0;
+    private double _tNext = 0;
     private const double COMPARISON_TOLERANCE = 0.000001;
 
     public event Action<ILogger>? OnResultsPrinted;
     public bool DisableLogging { get; set; } = false;
+    public IModelStatistics? Statistics { get; set; }
 
-    public Model(List<Element> elements)
+    public Model(List<IElement> elements)
     {
         _elements = elements;
-        // _logger = new ConsoleLogger();
-        // _logger = new FileLogger("log.txt");
-        _tNext = 0;
-        _tCurrent = 0;
-
-        foreach (var element in _elements)
-        {
-            element.Logger = Logger;
-        }
     }
 
-    public Model(params Element[] elements) : this(new List<Element>(elements))
+    public Model(params IElement[] elements) : this(new List<IElement>(elements))
     {
     }
 
@@ -43,17 +32,13 @@ public class Model
             if (!DisableLogging)
                 Logger.WriteLine("");
 
-            _tNext = FindSmallestTNext(out _currentElement);
+            _tNext = FindSmallestTNext();
 
             DoStatistics();
 
-            _tCurrent = _tNext;
-
-            UpdateTCurrentInAllElements();
-
-            LogAndOutActElement(_currentElement);
-
-            ActElementsWithCurrentTNext();
+            UpdateTCurrent(_tNext);
+            
+            OutActRequiredElements();
 
             if (!DisableLogging)
                 PrintElementsInfo();
@@ -64,26 +49,29 @@ public class Model
         OnResultsPrinted?.Invoke(Logger);
     }
 
-    private void ActElementsWithCurrentTNext()
+    private void UpdateTCurrent(double newTCurrent)
     {
+        _tCurrent = _tNext;
+
+        UpdateTCurrentInElements();
+    }
+
+    private double FindSmallestTNext()
+    {
+        double result = Double.MaxValue;
+    
         foreach (var element in _elements)
         {
-            if (Math.Abs(element.TNext - _tCurrent) < COMPARISON_TOLERANCE)
+            if (element.TNext < result)
             {
-                LogAndOutActElement(element);
+                result = element.TNext;
             }
         }
+    
+        return result;
     }
-
-    private void LogAndOutActElement(Element element)
-    {
-        LogCurrentEvent(element);
-
-        element.OutAct();
-        // element.LogTransition(_logger);
-    }
-
-    private void UpdateTCurrentInAllElements()
+    
+    private void UpdateTCurrentInElements()
     {
         foreach (var element in _elements)
         {
@@ -91,68 +79,22 @@ public class Model
         }
     }
 
-    private void DoStatistics()
+    private void OutActRequiredElements()
     {
-        for (var i = 0; i < _elements.Count; i++)
-        {
-            _elements[i].DoStatistics(_tNext - _tCurrent);
-        }
-    }
-
-    private double CalculateMeanClientsInSystem()
-    {
-        return _elements.Sum(el => el.ClientTimeProcessing) / _tCurrent;
-    }
-
-    private double CalculateMeanTimeInSystem()
-    {
-        return _elements.Sum(el => el.ClientTimeProcessing) /
-               _elements.Where(el => el is Create).Sum(el => el.Quantity);
-    }
-
-    private void LogCurrentEvent(Element currentElement)
-    {
-        if (!DisableLogging)
-            Logger.WriteLine($"It's time for event in {currentElement.Name}, time = {_tCurrent}");
-    }
-
-    private double FindSmallestTNext(out Element correspondingElement)
-    {
-        double result = Double.MaxValue;
-        correspondingElement = null;
-
         foreach (var element in _elements)
         {
-            if (element.TNext < result)
+            if (Math.Abs(element.TNext - _tCurrent) < COMPARISON_TOLERANCE)
             {
-                result = element.TNext;
-                correspondingElement = element;
+                LogElementOutAct(element);
+                OutActElement(element);
             }
         }
-
-        return result;
     }
-
-    public void PrintElementsInfo()
+    private void OutActElement(IElement element)
     {
-        foreach (var element in _elements)
-        {
-            element.PrintInfo(Logger);
-        }
+        element.OutAct();
     }
-
-    public void PrintResults()
-    {
-        Logger.WriteLine("\n-------------RESULTS-------------");
-        foreach (Element element in _elements)
-        {
-            element.PrintResult(Logger);
-        }
-
-        Logger.WriteLine($"Mean clients in system: {CalculateMeanClientsInSystem()}");
-        Logger.WriteLine($"Mean time in system: {CalculateMeanTimeInSystem()}");
-    }
-
+    
     public void Reset()
     {
         _tNext = 0;
@@ -163,4 +105,60 @@ public class Model
             element.Reset();
         }
     }
+
+    private void LogElementOutAct(IElement element)
+    {
+    }
+    //
+    //
+    private void DoStatistics()
+    {
+        Statistics?.DoStatistics(_tNext - _tCurrent);
+        for (var i = 0; i < _elements.Count; i++)
+        {
+            _elements[i].DoStatistics(_tNext - _tCurrent);
+        }
+    }
+    //
+    // private double CalculateMeanClientsInSystem()
+    // {
+    //     return _elements.Sum(el => el.ClientTimeProcessing) / _tCurrent;
+    // }
+    //
+    // private double CalculateMeanTimeInSystem()
+    // {
+    //     return _elements.Sum(el => el.ClientTimeProcessing) /
+    //            _elements.Where(el => el is Create).Sum(el => el.Quantity);
+    // }
+    //
+    // private void LogCurrentEvent(Element currentElement)
+    // {
+    //     if (!DisableLogging)
+    //         Logger.WriteLine($"It's time for event in {currentElement.Name}, time = {_tCurrent}");
+    // }
+    //
+    //
+    public void PrintElementsInfo()
+    {
+        Logger.WriteLine("\n-------------INFO-------------");
+        Logger.WriteLine($"tCurrent = {_tCurrent}");
+        foreach (var element in _elements)
+        {
+            element.PrintInfo(Logger);
+        }
+    }
+    //
+    public void PrintResults()
+    {
+        Logger.WriteLine("\n-------------RESULTS-------------");
+        Statistics?.PrintResult(Logger);
+        foreach (IElement element in _elements)
+        {
+            element.PrintResult(Logger);
+        }
+    
+        // Logger.WriteLine($"Mean clients in system: {CalculateMeanClientsInSystem()}");
+        // Logger.WriteLine($"Mean time in system: {CalculateMeanTimeInSystem()}");
+    }
+    //
 }

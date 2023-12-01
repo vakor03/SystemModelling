@@ -1,4 +1,4 @@
-﻿using SystemModelling.SMO.Builders;
+﻿using SystemModelling.SMO.Loggers;
 
 namespace SystemModelling.SMO.Elements;
 
@@ -6,10 +6,15 @@ public class Create : Element
 {
     public override void OutAct()
     {
-        base.OutAct();
-        TNext = TCurrent + GetDelay();
+        OutQuantity++;
+        TNext = TCurrent + DelayGenerator.GetDelay();
         
         PerformTransitionToNext();
+    }
+
+    public override void PrintResult(ILogger logger)
+    {
+        logger.WriteLine($"\n{Name}\n\tItems created: {OutQuantity}");
     }
 
     public override void Reset()
@@ -17,6 +22,4 @@ public class Create : Element
         base.Reset();
         TNext = 0;
     }
-
-    public new static FluentCreateBuilder New() => new();
 }

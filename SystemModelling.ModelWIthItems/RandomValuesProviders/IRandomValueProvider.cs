@@ -1,4 +1,4 @@
-﻿namespace SystemModelling.ModelWIthItems.DelayGenerators;
+﻿namespace SystemModelling.ModelWIthItems.RandomValuesProviders;
 
 public interface IRandomValueProvider
 {

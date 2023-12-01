@@ -2,7 +2,7 @@
 using SystemModelling.ModelWIthItems.DelayGenerators;
 using SystemModelling.ModelWIthItems.NextElements;
 using SystemModelling.ModelWIthItems.Patients;
-using SystemModelling.Shared;
+using SystemModelling.SMO.Loggers;
 
 namespace SystemModelling.ModelWIthItems.Elements;
 

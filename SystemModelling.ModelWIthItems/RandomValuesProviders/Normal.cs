@@ -1,6 +1,4 @@
-﻿using MathNet.Numerics.Distributions;
-
-namespace SystemModelling.ModelWIthItems.DelayGenerators;
+﻿namespace SystemModelling.ModelWIthItems.RandomValuesProviders;
 
 public class Normal : IRandomValueProvider
 {

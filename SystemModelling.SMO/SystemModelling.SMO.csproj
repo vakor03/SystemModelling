@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -10,10 +9,6 @@
     <ItemGroup>
       <PackageReference Include="FluentAssertions" Version="7.0.0-alpha.2" />
       <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\SystemModelling.Shared\SystemModelling.Shared.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,103 +1,59 @@
-﻿using SystemModelling.Shared;
-using SystemModelling.SMO.Builders;
-using SystemModelling.SMO.Enums;
+﻿using SystemModelling.SMO.DelayGenerators;
+using SystemModelling.SMO.Loggers;
 using SystemModelling.SMO.Transitions;
 
 namespace SystemModelling.SMO.Elements;
 
-public class Element
+public abstract class Element : IElement
 {
     public string Name { get; set; }
-    public int Quantity { get; set; }
-    protected State CurrentState { get; set; }
-    public ITransition? Transition { get; set; }
-
-    #region DelayGenerator
-
-    public double DelayMean { get; set; }
-    public double DelayDeviation { get; set; }
-    public DistributionType Distribution { get; set; }
-
-    #endregion
-
-    #region Id
-
     public int Id { get; init; }
-    public static int NextId { get; set; } = 0;
-
-    #endregion
     
-    #region Time
-
+    public int OutQuantity { get; set; }
+    public int InQuantity { get; set; }
+    public ITransition? Transition { get; set; }
+    public IDelayGenerator DelayGenerator { get; set; }
     public double TCurrent { get; set; }
     public double TNext { get; set; }
 
-    #endregion
-    
-    public ILogger Logger { get; set; }
-    public double ClientTimeProcessing { get; set; }
-
-    public Element()
-    {
-        Id = NextId++;
-        Name = $"element {Id}";
-    }
-
-    protected double GetDelay()
-    {
-        return Distribution switch
-        {
-            DistributionType.Exp => FunRand.Exp(DelayMean),
-            DistributionType.Constant => DelayMean,
-            DistributionType.Normal => FunRand.Norm(DelayMean, DelayDeviation),
-            DistributionType.Uniform => FunRand.Unif(DelayMean, DelayDeviation),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
-
     public virtual void PrintInfo(ILogger logger)
     {
-        logger.WriteLine($"{Name} quantity={Quantity} tNext={TNext}");
+        logger.WriteLine($"{Name} quantity={OutQuantity} tNext={TNext}");
     }
 
-    public virtual void PrintResult(ILogger logger)
-    {
-        logger.WriteLine($"{Name} quantity={Quantity}");
-    }
+    public abstract void PrintResult(ILogger logger);
 
     public virtual void OutAct()
     {
-        Quantity++;
-    }
-    
-    public virtual void LogTransition(Element? transitionElement)
-    {
-        Logger.WriteLine($"{Name} -> {transitionElement?.Name ?? "null"}");
+        OutQuantity++;
     }
 
     protected void PerformTransitionToNext()
     {
         Element? transitionElement = Transition?.Next;
         
-        LogTransition(transitionElement);
         transitionElement?.InAct();
     }
 
     public virtual void InAct()
     {
+        InQuantity++;
     }
 
     public virtual void DoStatistics(double delta)
     {
     }
 
-    protected enum State
+    public virtual void PrintInfo()
     {
-        Free = 0,
-        Busy = 1,
+        // no-op
     }
-    
-    public static FluentElementBuilder New() => new();
+
+    // protected enum State
+    // {
+    //     Free = 0,
+    //     Busy = 1,
+    // }
 
     public virtual void Reset()
     {

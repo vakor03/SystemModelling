@@ -4,7 +4,8 @@ using SystemModelling.ModelWIthItems.DelayGenerators;
 using SystemModelling.ModelWIthItems.Elements;
 using SystemModelling.ModelWIthItems.NextElements;
 using SystemModelling.ModelWIthItems.Patients;
-using SystemModelling.Shared;
+using SystemModelling.ModelWIthItems.RandomValuesProviders;
+using SystemModelling.SMO.Loggers;
 
 
 var logger = new FileLogger("results.txt");

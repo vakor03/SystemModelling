@@ -1,5 +1,5 @@
 ﻿using SystemModelling.ModelWIthItems.Elements;
-using SystemModelling.Shared;
+using SystemModelling.SMO.Loggers;
 
 namespace SystemModelling.ModelWIthItems;
 

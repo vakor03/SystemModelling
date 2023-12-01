@@ -1,23 +1,18 @@
 ﻿#region
 
-using System.Text;
-using SystemModelling.Shared;
-using SystemModelling.SMO.Builders;
+using SystemModelling.SMO.Loggers;
 
 #endregion
 
 namespace SystemModelling.SMO.Elements;
 
-public class Process : Element
+public class Process : Element, IProcess
 {
-    private readonly StringBuilder _sb = new();
-
     private readonly Subprocess[] _subprocesses;
-    private int _failure = 0;
+    public IEnumerable<Subprocess> Subprocesses => _subprocesses;
+    private HashSet<IProcessStatistics> _statistics = new();
 
-    private double _meanQueue;
-
-    public Process(int subprocessesCount)
+    public Process(int subprocessesCount = 1)
     {
         _subprocesses = CreateSubprocesses(subprocessesCount);
     }
@@ -26,36 +21,21 @@ public class Process : Element
 
     public int MaxQueue { get; set; }
 
-    private int Failure
-    {
-        get => _failure;
-        set
-        {
-            _failure = value;
-            OnFailure?.Invoke();
-        }
-    }
+    public int Quantity { get; }
+    public int Failure { get; private set; } = 0;
 
-    public int SubprocessesCount => _subprocesses.Length;
-    private double TotalTimeLeave { get; set; }
-    private double PrevTimeLeave { get; set; }
-
-    public event Action? OnEnter;
-    public event Action? OnSuccess;
-    public event Action? OnFailure;
-    public event Action? OnQueueChanged;
+    public event Action OnOutAct;
+    public event Action OnQueueChange;
 
     public override void InAct()
     {
         base.InAct();
-        OnEnter?.Invoke();
 
         foreach (var subprocess in _subprocesses)
         {
             if (!subprocess.IsBusy)
             {
                 SubprocessInAct(subprocess);
-                UpdateState();
                 return;
             }
         }
@@ -63,29 +43,18 @@ public class Process : Element
         if (Queue < MaxQueue)
         {
             Queue++;
-            OnQueueChanged?.Invoke();
+            OnQueueChange?.Invoke();
         }
         else
         {
             Failure++;
         }
-
-        UpdateState();
-    }
-
-    private void UpdateState()
-    {
-        CurrentState = Queue switch
-        {
-            0 => State.Free,
-            _ => State.Busy
-        };
     }
 
     public override void OutAct()
     {
         base.OutAct();
-        OnSuccess?.Invoke();
+        OnOutAct?.Invoke();
 
         foreach (var subprocess in _subprocesses)
         {
@@ -95,45 +64,33 @@ public class Process : Element
 
                 if (Queue > 0)
                 {
-                    Queue--;
-                    OnQueueChanged?.Invoke();
                     SubprocessInAct(subprocess);
+                    Queue--;
+                    OnQueueChange?.Invoke();
                 }
             }
         }
 
         UpdateTNext();
-        UpdateState();
-
-        UpdateTotalTimeLeaved();
     }
 
-    private void UpdateTotalTimeLeaved()
-    {
-        if (PrevTimeLeave != 0)
-        {
-            TotalTimeLeave += TCurrent - PrevTimeLeave;
-        }
 
-        PrevTimeLeave = TCurrent;
-    }
+    public int BusySubprocessesCount { get; private set; } = 0;
 
-    private int _busySubprocessesCount = 0;
     private void SubprocessOutAct(Subprocess subprocess)
     {
         subprocess.IsBusy = false;
         subprocess.TNext = Double.MaxValue;
-        _busySubprocessesCount--;
-        
-        
+        BusySubprocessesCount--;
+
         PerformTransitionToNext();
     }
 
     private void SubprocessInAct(Subprocess subprocess)
     {
-        subprocess.TNext = TCurrent + GetDelay();
+        subprocess.TNext = TCurrent + DelayGenerator.GetDelay();
         subprocess.IsBusy = true;
-        _busySubprocessesCount++;
+        BusySubprocessesCount++;
 
         UpdateTNext();
     }
@@ -143,40 +100,33 @@ public class Process : Element
         TNext = _subprocesses.Min(sp => sp.TNext);
     }
 
-    public override void DoStatistics(double delta)
+    public void AddStatistics(IProcessStatistics statistics)
     {
-        _meanQueue += Queue * delta;
-        foreach (var subprocess in _subprocesses)
-        {
-            subprocess.DoStatistics(delta);
-        }
-
-        // var count = _subprocesses.Count(sp=>sp.IsBusy);
-        ClientTimeProcessing += (_busySubprocessesCount + Queue) * delta;
+        statistics.Init(this);
+        _statistics.Add(statistics);
     }
 
+    public override void DoStatistics(double delta)
+    {
+        foreach (var processStatistics in _statistics)
+        {
+            processStatistics.DoStatistics(delta);
+        }
+    }
 
     public override void PrintInfo(ILogger logger)
     {
-        logger.WriteLine($"{Name} loaded={_subprocesses.Count(sp => sp.IsBusy)}/{_subprocesses.Length}" +
-                         $" queue={Queue} failured={Failure} quantity={Quantity} tNext={TNext}");
+        logger.WriteLine(
+            $"{Name} loaded={_subprocesses.Count(sp => sp.IsBusy)}/{_subprocesses.Length} queue={Queue} failured={Failure} quantity={OutQuantity} tNext={TNext}");
     }
 
     public override void PrintResult(ILogger logger)
     {
-        base.PrintResult(logger);
-
-        _sb.AppendLine($"Mean queue: {_meanQueue / TCurrent}");
-        foreach (var subprocess in _subprocesses)
+        logger.WriteLine($"\n{Name}");
+        foreach (var processStatistics in _statistics)
         {
-            _sb.AppendLine($"\t{subprocess.Name} mean load: {subprocess.MeanLoad / TCurrent}");
+            processStatistics.PrintResult(logger);
         }
-
-        _sb.AppendLine($"Mean time between leaving: {TotalTimeLeave / Quantity}");
-        _sb.AppendLine($"Failure probability: {(double)Failure / Quantity}");
-        logger.WriteLine(_sb.ToString());
-
-        _sb.Clear();
     }
 
     private Subprocess[] CreateSubprocesses(int subprocessesCount)
@@ -186,7 +136,6 @@ public class Process : Element
         {
             subprocesses[i] = new Subprocess
             {
-                Name = $"subprocess {i}",
                 TNext = Double.MaxValue,
                 IsBusy = false
             };
@@ -194,6 +143,4 @@ public class Process : Element
 
         return subprocesses;
     }
-
-    public new static FluentProcessBuilder New() => new();
 }

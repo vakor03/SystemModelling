@@ -1,4 +1,6 @@
-﻿namespace SystemModelling.ModelWIthItems.DelayGenerators;
+﻿using SystemModelling.ModelWIthItems.RandomValuesProviders;
+
+namespace SystemModelling.ModelWIthItems.DelayGenerators;
 
 public class SimpleDelayGenerator<T> : IDelayGenerator<T> where T : IItem
 {
