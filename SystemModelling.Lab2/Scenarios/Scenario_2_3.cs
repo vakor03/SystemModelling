@@ -10,31 +10,34 @@ public class Scenario_2_3 : Scenario
 {
     public override void Run(double time)
     {
+        var maxQueue = 5;
+        var creationTime = 2;
+        
         Create create = new Create()
         {
             Name = "Creator",
-            DelayGenerator = new Exponential(2.0).ToGenerator(),
+            DelayGenerator = new Exponential(creationTime).ToGenerator(),
         };
-        
+
         Process process1 = new Process(1)
         {
             Name = "Processor",
-            DelayGenerator = new Exponential(3.0).ToGenerator(),
-            MaxQueue = 5,
+            DelayGenerator = new Exponential(2.0).ToGenerator(),
+            MaxQueue = maxQueue,
         };
         
         Process process2 = new Process(1)
         {
             Name = "Processor2",
-            DelayGenerator = new Exponential(1.0).ToGenerator(),
-            MaxQueue = 5,
+            DelayGenerator = new Exponential(3.0).ToGenerator(),
+            MaxQueue = maxQueue,
         };
         
         Process process3 = new Process(1)
         {
             Name = "Processor3",
-            DelayGenerator = new Exponential(1.0).ToGenerator(),
-            MaxQueue = 5,
+            DelayGenerator = new Exponential(4.0).ToGenerator(),
+            MaxQueue = maxQueue,
         };
         process1.AddStatistics(new StandardProcessStatistics());
         process2.AddStatistics(new StandardProcessStatistics());
